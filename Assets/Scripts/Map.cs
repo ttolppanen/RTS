@@ -10,18 +10,22 @@ public class Map : MonoBehaviour
     public int numberOfLand;
     public int[,] mapData;
     public Sprite[] landTextures;
+    public GameObject[] resources;
     List<Vector2Int> edgePoints = new List<Vector2Int>();
 
     private void Awake()
     {
-        { if (ins == null)
         {
-            ins = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        } } //Singleton...(?)
+            if (ins == null)
+            {
+                ins = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        } //Singleton...(?)
 
         mapData = new int[size.x, size.y];
 
@@ -37,6 +41,7 @@ public class Map : MonoBehaviour
         if (numberOfLand < 0) //Jos kaikki maapalat on laitettu, niin lopetetaan. < 0 Jotta viimeinen palata tulee laitettua, == 0 ei tulisi...
         {
             CreateWorldSprite();
+            InstantiateResources();
             yield break;
         }
 
@@ -125,7 +130,15 @@ public class Map : MonoBehaviour
         {
             for (int ix = 0; ix < size.x; ix++)
             {
-                Texture2D landTexture = landTextures[mapData[ix, iy]].texture;
+                Texture2D landTexture;
+                if (mapData[ix, iy] == 0)
+                {
+                    landTexture = landTextures[0].texture;
+                }
+                else
+                {
+                    landTexture = landTextures[1].texture;
+                }
                 Graphics.CopyTexture(landTexture, 0, 0, 0, 0, 32, 32, worldTexture, 0, 0, ix * 32, iy * 32);
             }
         }
@@ -134,5 +147,18 @@ public class Map : MonoBehaviour
         gameObject.AddComponent<SpriteRenderer>().sprite = worldSprite;
     }
 
+    void InstantiateResources()
+    {
+        for (int iy = 0; iy < size.y; iy++)
+        {
+            for (int ix = 0; ix < size.x; ix++)
+            {
+                if (mapData[ix, iy] == (int)LandTypes.tree)
+                {
+                    Instantiate(resources[0], new Vector3(ix, iy, 0), Quaternion.identity);
+                }
+            }
+        }
+    }
 }
-public enum LandTypes {sea, grass, grassBush, sand, lastNumber};
+public enum LandTypes {sea, grass, tree, sand, lastNumber};
