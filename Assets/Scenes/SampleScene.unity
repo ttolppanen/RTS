@@ -552,8 +552,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 873d2ff22c8f26b4fba24b0d81ce58d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {x: 100, y: 100}
-  numberOfLand: 1000
+  size: {x: 500, y: 500}
+  numberOfLand: 100000
+  numberOfForests: 100
   landTextures:
   - {fileID: 21300000, guid: cc8d4425cee354b489f22c2e4c141ff4, type: 3}
   - {fileID: 21300000, guid: 2f97a8ea86cd08f4a996f7fe273fb383, type: 3}

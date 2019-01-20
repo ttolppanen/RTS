@@ -8,10 +8,11 @@ public class Map : MonoBehaviour
 
     public Vector2Int size;
     public int numberOfLand;
+    public int numberOfForests;
     public int[,] mapData;
     public Sprite[] landTextures;
     public GameObject[] resources;
-    List<Vector2Int> edgePoints = new List<Vector2Int>();
+    bool isGenerating = false;
 
     private void Awake()
     {
@@ -29,47 +30,140 @@ public class Map : MonoBehaviour
 
         mapData = new int[size.x, size.y];
 
-        Vector2Int startingPoint = new Vector2Int(Random.Range(0, size.x), Random.Range(0, size.y));
-        mapData[startingPoint.x, startingPoint.y] = Random.Range(1, (int)LandTypes.lastNumber);
-        edgePoints.Add(startingPoint);
-        StartCoroutine(CreateMap());
+        StartCoroutine(BeginNodeCreation());
     }
 
-    IEnumerator CreateMap()
+    List<Vector2Int> PossibleCoords(int type) //Hakee kartasta kaikki koordinaatit missä on annetun tyypin juttu, esim kaikki pisteet missä on merta.
     {
-        numberOfLand--;
-        if (numberOfLand < 0) //Jos kaikki maapalat on laitettu, niin lopetetaan. < 0 Jotta viimeinen palata tulee laitettua, == 0 ei tulisi...
+        List<Vector2Int> points = new List<Vector2Int>();
+        for (int iy = 0; iy < size.y; iy++)
         {
-            CreateWorldSprite();
-            InstantiateResources();
+            for (int ix = 0; ix < size.x; ix++)
+            {
+                if (mapData[ix, iy] == type)
+                {
+                    points.Add(new Vector2Int(ix, iy));
+                }
+            }
+        }
+        return points;
+    }
+
+    IEnumerator BeginNodeCreation ()
+    {
+        Vector2Int startingPoint = new Vector2Int(size.x / 2, size.y / 2);
+        mapData[startingPoint.x, startingPoint.y] = (int)LandTypes.grass;
+
+        List<int> allowedTypes = new List<int>();
+        List<Vector2Int> edgePoints = new List<Vector2Int>();
+
+        //Generoidaan maa
+        isGenerating = true;
+        allowedTypes.Add((int)LandTypes.sea);
+        edgePoints.Add(startingPoint);
+
+        StartCoroutine(CreateNode(numberOfLand, (int)LandTypes.grass, allowedTypes, edgePoints));
+        while (isGenerating) //isGenerating menee falseksi kun CreateNode on valmis
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        allowedTypes.Clear();
+        edgePoints.Clear();
+
+        //Hiekka tulee veden reunalle niin ei tarvi alustaa mitään...
+        GenerateSand();
+
+        //Generoidaan puut
+        for (int i = 0; i < numberOfForests; i++)
+        {
+            isGenerating = true;
+            List<Vector2Int> possibleTreePoints = PossibleCoords((int)LandTypes.grass); //Mahdolliset paikat mihin puita voi laittaa
+            startingPoint = possibleTreePoints[Random.Range(0, possibleTreePoints.Count - 1)]; //Valitaan sieltä jokin
+            allowedTypes.Add((int)LandTypes.grass);
+            edgePoints.Add(startingPoint);
+
+            StartCoroutine(CreateNode(Random.Range(100, 500), (int)LandTypes.tree, allowedTypes, edgePoints)); //HARDKOODATTU metsän kooksi 30 - 200
+            while (isGenerating) //isGenerating menee falseksi kun CreateNode on valmis
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            allowedTypes.Clear();
+            edgePoints.Clear();
+        }
+
+        CreateWorldSprite();
+        InstantiateResources();
+    }
+
+    bool IsInsideMap(Vector2Int pos)
+    {
+        if (pos.x >= 0 && pos.x <= size.x && pos.y >= 0 && pos.y <= size.y)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    void GenerateSand()
+    {
+        List<Vector2Int> allGrass = PossibleCoords((int)LandTypes.grass);
+        foreach (Vector2Int point in allGrass)
+        {
+            for (int iy = -2; iy <= 2; iy++)
+            {
+                for (int ix = -2; ix <= 2; ix++)
+                {
+                    Vector2Int pointBeingChecked = point + new Vector2Int(ix, iy);
+                    if (IsInsideMap(pointBeingChecked))
+                    {
+                        if (mapData[pointBeingChecked.x, pointBeingChecked.y] == (int)LandTypes.sea)
+                        {
+                            mapData[point.x, point.y] = (int)LandTypes.sand;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    IEnumerator CreateNode(int amount, int type, List<int> allowedTypes, List<Vector2Int> edgePoints)
+    {
+        amount--;
+        if (amount < 0) //Jos kaikki maapalat on laitettu, niin lopetetaan. < 0 Jotta viimeinen palata tulee laitettua, == 0 ei tulisi...
+        {
+            isGenerating = false;
             yield break;
         }
-
+        if (edgePoints.Count == 0)
+        {
+            isGenerating = false;
+            yield break;
+        }
         Vector2Int newOrigin = edgePoints[Random.Range(0, edgePoints.Count - 1)]; //Uusi piste minkä viereen lisätään uusi pala...
-        List<Vector2Int> possiblePoints = FindPossibleNewSlots(newOrigin);
+        List<Vector2Int> possiblePoints = FindPossibleNewSlots(newOrigin, allowedTypes);
+        if (possiblePoints.Count == 0)
+        {
+            isGenerating = false;
+            yield break;
+        }
         Vector2Int newPoint = possiblePoints[Random.Range(0, possiblePoints.Count - 1)];
-        if (Random.Range(0f, 1f) >= 0.8f)
-        {
-            mapData[newPoint.x, newPoint.y] = mapData[newOrigin.x, newOrigin.y];
-        }
-        else
-        {
-            mapData[newPoint.x, newPoint.y] = Random.Range(1, (int)LandTypes.lastNumber - 1);
-        }
+        
+        mapData[newPoint.x, newPoint.y] = type;
 
-        List<Vector2Int> testList = FindPossibleNewSlots(newPoint);
-        if (testList.Count != 0) //Katotaan onko uuden pisteen ympärillä vettä, jos on niin lisätään se reunapisteisiin...
+        List<Vector2Int> testList = FindPossibleNewSlots(newPoint, allowedTypes);
+        if (testList.Count != 0) //Katotaan onko uuden pisteen ympärillä sallittua maata, jos on lisätään se reunapisteisiin
         {
             edgePoints.Add(newPoint);
         }
-        testList = FindPossibleNewSlots(newOrigin);
+        testList = FindPossibleNewSlots(newOrigin, allowedTypes);
 
         for (int i = -1; i <= 1; i += 2)
         {
-            if (newPoint.x + i >= 0 && newPoint.x + i < size.x) //Katotaan onko mapin sisällä
+            if (IsInsideMap(newPoint + new Vector2Int(i, 0))) //Katotaan onko mapin sisällä
             {
-                testList = FindPossibleNewSlots(newPoint + new Vector2Int(i, 0));
-                if (testList.Count == 0) //Katotaan onko pisteen, minkä ympäriltä löydettiin uus piste, vettä. Jos ei ole niin poistetaan se reunapisteistä.
+                testList = FindPossibleNewSlots(newPoint + new Vector2Int(i, 0), allowedTypes);
+                if (testList.Count == 0) //Katotaan onko pisteen, minkä ympäriltä löydettiin uus piste, sallittu maa(?). Jos ei ole niin poistetaan se reunapisteistä.
                 {
                     edgePoints.Remove(newPoint + new Vector2Int(i, 0));
                 }
@@ -78,9 +172,9 @@ public class Map : MonoBehaviour
 
         for (int i = -1; i <= 1; i += 2)
         {
-            if (newPoint.y + i >= 0 && newPoint.y + i < size.y) //Katotaan onko mapin sisällä
+            if (IsInsideMap(newPoint + new Vector2Int(0, i))) //Katotaan onko mapin sisällä
             {
-                testList = FindPossibleNewSlots(newPoint + new Vector2Int(0, i));
+                testList = FindPossibleNewSlots(newPoint + new Vector2Int(0, i), allowedTypes);
                 if (testList.Count == 0) //Katotaan onko pisteen, minkä ympäriltä löydettiin uus piste, vettä. Jos ei ole niin poistetaan se reunapisteistä.
                 {
                     edgePoints.Remove(newPoint + new Vector2Int(0, i));
@@ -88,21 +182,21 @@ public class Map : MonoBehaviour
             }
         }
 
-        if (numberOfLand % 100 == 0)
+        if (amount % 100 == 0)
         {
             yield return new WaitForEndOfFrame();
         }
-        StartCoroutine(CreateMap());
+        StartCoroutine(CreateNode(amount, type, allowedTypes, edgePoints));
     }
 
-    List<Vector2Int> FindPossibleNewSlots(Vector2Int origin)
+    List<Vector2Int> FindPossibleNewSlots(Vector2Int origin, List<int> allowedTypes) //AllowedTypes on siis lista sallituista maista. Esim jos generoidaan maata, niin sitä saa asettaa vain veden päälle joten Allowedypes[0] = LandTypes.sea eikä siinä ole muita alkioita. Puiden kanssa se olisi sitten maa eli LandTypes.grass jne...
     {
         List<Vector2Int> possiblePoints = new List<Vector2Int>();
         for (int i = -1; i <= 1; i += 2)
         {
-            if (origin.x + i >= 0 && origin.x + i < size.x) //Katotaan onko mapin sisällä
+            if (IsInsideMap(origin + new Vector2Int(i, 0))) //Katotaan onko mapin sisällä
             {
-                if (mapData[origin.x + i, origin.y] == 0)
+                if (allowedTypes.Contains(mapData[origin.x + i, origin.y]))
                 {
                     possiblePoints.Add(new Vector2Int(origin.x + i, origin.y));
                 }
@@ -111,9 +205,9 @@ public class Map : MonoBehaviour
 
         for (int i = -1; i <= 1; i += 2)
         {
-            if (origin.y + i >= 0 && origin.y + i < size.y) //Katotaan onko mapin sisällä
+            if (IsInsideMap(origin + new Vector2Int(0, i))) //Katotaan onko mapin sisällä
             {
-                if (mapData[origin.x, origin.y + i] == 0)
+                if (allowedTypes.Contains(mapData[origin.x, origin.y + i]))
                 {
                     possiblePoints.Add(new Vector2Int(origin.x, origin.y + i));
                 }
@@ -165,4 +259,4 @@ public class Map : MonoBehaviour
         }
     }
 }
-public enum LandTypes {sea, grass, tree, sand, lastNumber};
+public enum LandTypes {sea, grass, tree, sand, building, lastNumber};
