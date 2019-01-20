@@ -135,6 +135,10 @@ public class Map : MonoBehaviour
                 {
                     landTexture = landTextures[0].texture;
                 }
+                else if (mapData[ix, iy] == (int)LandTypes.sand)
+                {
+                    landTexture = landTextures[(int)LandTypes.sand].texture;
+                }
                 else
                 {
                     landTexture = landTextures[1].texture;
