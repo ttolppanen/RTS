@@ -7,13 +7,14 @@ public class UnitMovement : MonoBehaviour
     public float speed;
     List<Vector2Int> path = new List<Vector2Int>();
     bool moving = false;
-    int i; //Missä kohdassa path polkua ollaan menossa
+    int i; //Missä kohdassa path polkua ollaan menossa, huomioitava asia on että path tulee väärässä järjestyksesä. siis path[0] on maali
     Rigidbody2D rb;
     Vector2 movingDirection;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        transform.position = CordPosition();
     }
 
     private void Update()
@@ -25,20 +26,19 @@ public class UnitMovement : MonoBehaviour
         }
         if(moving)
         {
-            Vector2 vectorToNextPoint = path[i] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position;
+            Vector2 vectorToNextPoint = path[i - 1] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position;
             if (Vector2.Dot(vectorToNextPoint, movingDirection) <= 0)
             {
-                transform.position = CordPosition();
-                if (i == path.Count - 1)
+                i--;
+                if (i == 0)
                 {
                     moving = false;
                     rb.velocity = Vector2.zero;
                 }
                 else
                 {
-                    i++;
-                    movingDirection = (path[i] - path[i - 1]);
-                    rb.velocity = speed * movingDirection;
+                    movingDirection = (path[i - 1] - path[i]);
+                    rb.velocity = speed * movingDirection.normalized;
                 }
             }
         }
@@ -52,18 +52,17 @@ public class UnitMovement : MonoBehaviour
     public void Move(Vector2Int goal)
     {
         path.Clear();
-        path.Add(new Vector2Int((int)transform.position.x, (int)transform.position.y));
-        List<Vector2Int> checkedPoints = new List<Vector2Int>();
-        List<Vector2Int> beginningPath = new List<Vector2Int>();
-        beginningPath.Add(new Vector2Int((int)transform.position.x, (int)transform.position.y));
-        Map.ins.FindPath(goal, checkedPoints, beginningPath, path);
+        Vector2Int start = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+        path = Map.ins.AStarPathFinding(start, goal);
+        print(path.Count);
 
         if (path.Count > 0)
         {
-            i = 0;
+            i = path.Count - 1;
             moving = true;
-            movingDirection = (path[1] - path[0]);
-            rb.velocity = speed * movingDirection;
+            movingDirection = (path[i - 1] - path[i]);
+            print(movingDirection);
+            rb.velocity = speed * movingDirection.normalized;
         }
     }
 }
