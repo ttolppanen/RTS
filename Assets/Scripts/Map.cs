@@ -258,5 +258,114 @@ public class Map : MonoBehaviour
             }
         }
     }
+
+    float HeuresticEstimate(Vector2Int a, Vector2Int b)
+    {
+        return Mathf.Abs(a.x - b.x + a.y - b.y); //Lasketaan vektroin a - b pituus. Mutta pitäisi riittää laskea ilman neliöjuurta ja potensseja. Siis vertaus on silti sama(?) (Huonosti selitetty :D)
+    }
+
+    List<Vector2Int> ReconstructPath(IDictionary<Vector2Int, Vector2Int> cameFrom, Vector2Int current)
+    {
+        List<Vector2Int> totalPath = new List<Vector2Int>();
+        totalPath.Add(current);
+        List<Vector2Int> keys = new List<Vector2Int>(cameFrom.Keys);
+        while (keys.Contains(current))//alkupistettä ei koskaan tule cameFrommiinn....
+            {
+            current = cameFrom[current];
+            totalPath.Add(current);
+            }
+        return totalPath;
+    }
+
+    Dictionary<Vector2Int, float> InitGFScore()
+    {
+        Dictionary<Vector2Int, float> score = new Dictionary<Vector2Int, float>();
+        for (int iy = 0; iy < size.y; iy++)
+        {
+            for (int ix = 0; ix < size.x; ix++)
+            {
+                score.Add(new Vector2Int(ix, iy), 9999);
+            }
+        }
+        return score;
+    }
+
+    public List<Vector2Int> AStarPathFinding(Vector2Int start, Vector2Int goal)
+    {
+        List<Vector2Int> closedSet = new List<Vector2Int>(); //Pisteet jotka on jo tutkittu?
+        List<Vector2Int> openSet = new List<Vector2Int>(); //Pisteet mitkä pitää tutkia?
+        openSet.Add(start);
+        IDictionary<Vector2Int, Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>(); //Tyhjä kartta aluksi. Lopuksi jollakin avaimella saadaan piste mistä kannattee mennä siihen pisteeseen. cameFrom[jokinPiste] = lyhinPiste tästä tuohon johonkin pisteeseen(?) EHKÄ?
+        IDictionary<Vector2Int, float> gScore = InitGFScore(); //Hinta alkupisteetä tähän.
+        gScore[start] = 0;
+        IDictionary<Vector2Int, float> fScore = InitGFScore(); //Koko matkan hinta tänne?
+        fScore[start] = HeuresticEstimate(start, goal);
+        while (openSet.Count != 0)
+        {
+            Vector2Int current = SmallestFScoreFromOpenSet(openSet, fScore);
+            if (current == goal)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+            openSet.Remove(current);
+            closedSet.Add(current);
+            List<Vector2Int> neighbors = FindNeighbors(current);
+            foreach (Vector2Int neighbor in neighbors)
+            {
+                if (closedSet.Contains(neighbor))
+                {
+                    continue;
+                }
+                float tentativeGScore = gScore[current] + ((Vector2)current - (Vector2)neighbor).magnitude;
+                if (!openSet.Contains(neighbor))
+                {
+                    openSet.Add(neighbor);
+                }
+                else if (tentativeGScore >= gScore[neighbor])
+                {
+                    continue;
+                }
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = tentativeGScore + HeuresticEstimate(neighbor, goal);
+            }
+        }
+        return new List<Vector2Int>(); //Jos ei löydy polkua niin tulee tyhjä lista...
+    }
+
+    List<Vector2Int> FindNeighbors(Vector2Int point) //PITÄÄKÖ TEHÄ ALLOWED LAND TYPES JOSKUS???
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+        for (int iy = -1; iy <= 1; iy++)
+        {
+            for (int ix = -1; ix <= 1; ix++)
+            {
+                Vector2Int pointBeingChecked = new Vector2Int(point.x + ix, point.y + iy);
+                if (IsInsideMap(pointBeingChecked) && !(ix == 0 && iy == 0))
+                {
+                    if (mapData[pointBeingChecked.x, pointBeingChecked.y] == (int)LandTypes.grass || mapData[pointBeingChecked.x, pointBeingChecked.y] == (int)LandTypes.sand)
+                    {
+                        neighbors.Add(pointBeingChecked);
+                    }
+                }
+            }
+        }
+        return neighbors;
+    }
+
+    Vector2Int SmallestFScoreFromOpenSet(List<Vector2Int> openSet, IDictionary<Vector2Int, float> fScore)
+    {
+        float compare = 9999;
+        Vector2Int smallestPoint = openSet[0];
+        foreach (Vector2Int point in openSet)
+        {
+            if (fScore[point] < compare)
+            {
+                smallestPoint = point;
+                compare = fScore[point];
+            }
+        }
+        return smallestPoint;
+    }
 }
 public enum LandTypes {sea, grass, tree, sand, building, lastNumber};
