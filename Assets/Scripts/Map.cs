@@ -258,5 +258,87 @@ public class Map : MonoBehaviour
             }
         }
     }
+
+    public void FindPath(Vector2Int goal, List<Vector2Int> checkedPoints, List<Vector2Int> currentPath, List<Vector2Int> finalPath) //path[0] on aloituspiste
+    {
+        if (finalPath[finalPath.Count - 1] == goal) //Onko valmis
+        {
+            return;
+        }
+
+        Vector2Int currentPoint = currentPath[currentPath.Count - 1];
+        print(currentPoint);
+        checkedPoints.Add(currentPoint);
+        List<Vector2Int> possiblePoints = new List<Vector2Int>();
+        for (int i = -1; i <= 1; i += 2)
+        {
+            Vector2Int pointWeAreChecking = new Vector2Int(currentPoint.x + i, currentPoint.y);
+            if (IsInsideMap(pointWeAreChecking))
+            {
+                if ((mapData[pointWeAreChecking.x, pointWeAreChecking.y] == (int)LandTypes.grass || mapData[pointWeAreChecking.x, pointWeAreChecking.y] == (int)LandTypes.sand) && !checkedPoints.Contains(pointWeAreChecking)) //Jos mapissa on ruohoa ja ei olla jo katottu tätä pistettä
+                {
+                    possiblePoints.Add(pointWeAreChecking);
+                }
+            }
+        }
+        for (int i = -1; i <= 1; i += 2)
+        {
+            Vector2Int pointWeAreChecking = new Vector2Int(currentPoint.x, currentPoint.y + i);
+            if (IsInsideMap(pointWeAreChecking))
+            {
+                if ((mapData[pointWeAreChecking.x, pointWeAreChecking.y] == (int)LandTypes.grass || mapData[pointWeAreChecking.x, pointWeAreChecking.y] == (int)LandTypes.sand) && !checkedPoints.Contains(pointWeAreChecking))//Jos mapissa on ruohoa ja ei olla jo katottu tätä pistettä
+                {
+                    possiblePoints.Add(pointWeAreChecking);
+                }
+            }
+        }
+
+        if (possiblePoints.Count != 0)
+        {
+            List<Vector2Int> arrangedList = ArrangeByLength(possiblePoints, goal);
+            foreach (Vector2Int possiblePoint in arrangedList)
+            {
+                if (possiblePoint == goal)
+                {
+                    currentPath.Add(possiblePoint);
+                    finalPath = currentPath;
+                    return;
+                }
+                else
+                {
+                    List<Vector2Int> newPath = new List<Vector2Int>(currentPath);
+                    newPath.Add(possiblePoint);
+                    checkedPoints.Add(possiblePoint);
+                    FindPath(goal, checkedPoints, newPath, finalPath);
+                }
+            }
+        }
+    }
+
+    List<Vector2Int> ArrangeByLength(List<Vector2Int> a, Vector2Int b) //Lyhin etäisyys ekana...
+    {
+        List<Vector2Int> sortedList = new List<Vector2Int>();
+        sortedList.Add(a[0]);
+        for (int ia = 1; ia < a.Count; ia++)
+        {
+            for (int i = 0; i < sortedList.Count; i++)
+            {
+                float aDist = (a[ia] - b).magnitude; //mahdollisista pisteistä otetun vectorin a etäisyys b
+                float sDist = (sortedList[i] - b).magnitude; //...
+
+                if (aDist < sDist)
+                {
+                    sortedList.Insert(i, a[ia]);
+                    break;
+                }
+                else if (i == sortedList.Count - 1)
+                {
+                    sortedList.Add(a[ia]);
+                    break;
+                }
+            }
+        }
+        return sortedList;
+    }
 }
 public enum LandTypes {sea, grass, tree, sand, building, lastNumber};
