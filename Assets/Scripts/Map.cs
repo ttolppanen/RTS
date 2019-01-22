@@ -14,6 +14,8 @@ public class Map : MonoBehaviour
     public GameObject[] resources;
     bool isGenerating = false;
 
+    //KORJATTAVIA JUTTUA*** Jos painetaan samaa ruutua kuin missä jo ollaan. Jos puu on viereisessä ruudussa ei tarvi liikkua niin sitten ei kanskaan ala keräys?
+
     private void Awake()
     {
         {
@@ -62,7 +64,7 @@ public class Map : MonoBehaviour
         allowedTypes.Add((int)LandTypes.sea);
         edgePoints.Add(startingPoint);
 
-        StartCoroutine(CreateNode(numberOfLand, (int)LandTypes.grass, allowedTypes, edgePoints));
+        StartCoroutine(CreateNode(numberOfLand, LandTypes.grass, allowedTypes, edgePoints));
         while (isGenerating) //isGenerating menee falseksi kun CreateNode on valmis
         {
             yield return new WaitForEndOfFrame();
@@ -82,7 +84,7 @@ public class Map : MonoBehaviour
             allowedTypes.Add((int)LandTypes.grass);
             edgePoints.Add(startingPoint);
 
-            StartCoroutine(CreateNode(Random.Range(100, 500), (int)LandTypes.tree, allowedTypes, edgePoints)); //HARDKOODATTU metsän kooksi 30 - 200
+            StartCoroutine(CreateNode(Random.Range(100, 500), LandTypes.tree, allowedTypes, edgePoints)); //HARDKOODATTU metsän kooksi 30 - 200
             while (isGenerating) //isGenerating menee falseksi kun CreateNode on valmis
             {
                 yield return new WaitForEndOfFrame();
@@ -127,7 +129,7 @@ public class Map : MonoBehaviour
         }
     }
 
-    IEnumerator CreateNode(int amount, int type, List<int> allowedTypes, List<Vector2Int> edgePoints)
+    IEnumerator CreateNode(int amount, LandTypes type, List<int> allowedTypes, List<Vector2Int> edgePoints)
     {
         amount--;
         if (amount < 0) //Jos kaikki maapalat on laitettu, niin lopetetaan. < 0 Jotta viimeinen palata tulee laitettua, == 0 ei tulisi...
@@ -149,7 +151,7 @@ public class Map : MonoBehaviour
         }
         Vector2Int newPoint = possiblePoints[Random.Range(0, possiblePoints.Count - 1)];
         
-        mapData[newPoint.x, newPoint.y] = type;
+        mapData[newPoint.x, newPoint.y] = (int)type;
 
         List<Vector2Int> testList = FindPossibleNewSlots(newPoint, allowedTypes);
         if (testList.Count != 0) //Katotaan onko uuden pisteen ympärillä sallittua maata, jos on lisätään se reunapisteisiin
@@ -275,6 +277,7 @@ public class Map : MonoBehaviour
             current = cameFrom[current];
             totalPath.Add(current);
             }
+        totalPath.Reverse();
         return totalPath;
     }
 
@@ -334,7 +337,50 @@ public class Map : MonoBehaviour
         return new List<Vector2Int>(); //Jos ei löydy polkua niin tulee tyhjä lista...
     }
 
-    List<Vector2Int> FindNeighbors(Vector2Int point) //PITÄÄKÖ TEHÄ ALLOWED LAND TYPES JOSKUS???
+    public List<Vector2Int> AStarPathFinding(Vector2Int start, Vector2Int goal, List<Vector2Int> buildingCoordinates)
+    {
+        List<Vector2Int> closedSet = new List<Vector2Int>(); //Pisteet jotka on jo tutkittu?
+        List<Vector2Int> openSet = new List<Vector2Int>(); //Pisteet mitkä pitää tutkia?
+        openSet.Add(start);
+        IDictionary<Vector2Int, Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>(); //Tyhjä kartta aluksi. Lopuksi jollakin avaimella saadaan piste mistä kannattee mennä siihen pisteeseen. cameFrom[jokinPiste] = lyhinPiste tästä tuohon johonkin pisteeseen(?) EHKÄ?
+        IDictionary<Vector2Int, float> gScore = InitGFScore(); //Hinta alkupisteetä tähän.
+        gScore[start] = 0;
+        IDictionary<Vector2Int, float> fScore = InitGFScore(); //Koko matkan hinta tänne?
+        fScore[start] = HeuresticEstimate(start, goal);
+        while (openSet.Count != 0)
+        {
+            Vector2Int current = SmallestFScoreFromOpenSet(openSet, fScore);
+            if (current == goal)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+            openSet.Remove(current);
+            closedSet.Add(current);
+            List<Vector2Int> neighbors = FindNeighbors(current, buildingCoordinates);
+            foreach (Vector2Int neighbor in neighbors)
+            {
+                if (closedSet.Contains(neighbor))
+                {
+                    continue;
+                }
+                float tentativeGScore = gScore[current] + (current - neighbor).magnitude;
+                if (!openSet.Contains(neighbor))
+                {
+                    openSet.Add(neighbor);
+                }
+                else if (tentativeGScore >= gScore[neighbor])
+                {
+                    continue;
+                }
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = tentativeGScore + HeuresticEstimate(neighbor, goal);
+            }
+        }
+        return new List<Vector2Int>(); //Jos ei löydy polkua niin tulee tyhjä lista...
+    }
+
+    List<Vector2Int> FindNeighbors(Vector2Int point, List<Vector2Int> buildingCoordinates) //PITÄÄKÖ TEHÄ ALLOWED LAND TYPES JOSKUS??? JOO PITÄÄ JA THTY
     {
         List<Vector2Int> neighbors = new List<Vector2Int>();
         for (int iy = -1; iy <= 1; iy++)
@@ -344,7 +390,27 @@ public class Map : MonoBehaviour
                 Vector2Int pointBeingChecked = new Vector2Int(point.x + ix, point.y + iy);
                 if (IsInsideMap(pointBeingChecked) && !(ix == 0 && iy == 0))
                 {
-                    if (mapData[pointBeingChecked.x, pointBeingChecked.y] == (int)LandTypes.grass || mapData[pointBeingChecked.x, pointBeingChecked.y] == (int)LandTypes.sand)
+                    if (GM.allowedLand.Contains((LandTypes)mapData[pointBeingChecked.x, pointBeingChecked.y]) || buildingCoordinates.Contains(pointBeingChecked))
+                    {
+                        neighbors.Add(pointBeingChecked);
+                    }
+                }
+            }
+        }
+        return neighbors;
+    }
+
+    List<Vector2Int> FindNeighbors(Vector2Int point) //Versio missä ei tarvitse antaa Rakennuksen pisteitä
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+        for (int iy = -1; iy <= 1; iy++)
+        {
+            for (int ix = -1; ix <= 1; ix++)
+            {
+                Vector2Int pointBeingChecked = new Vector2Int(point.x + ix, point.y + iy);
+                if (IsInsideMap(pointBeingChecked) && !(ix == 0 && iy == 0))
+                {
+                    if (GM.allowedLand.Contains((LandTypes)mapData[pointBeingChecked.x, pointBeingChecked.y]))
                     {
                         neighbors.Add(pointBeingChecked);
                     }
@@ -367,5 +433,73 @@ public class Map : MonoBehaviour
             }
         }
         return smallestPoint;
+    }
+
+    List<Vector2Int> PointsAroundBuilding(Vector2Int point, Vector2Int size)
+    {
+        List<Vector2Int> possiblePoints = new List<Vector2Int>();
+        for (int iy = 0; iy <= 1; iy++) //Käydään läpi rakennuksen ala ja ylä reuna...
+        {
+            for (int ix = 0; ix < size.x; ix++)
+            {
+                Vector2Int pointBeingChecked = point + new Vector2Int(ix, size.y * iy);
+                List<Vector2Int> neighbors = FindNeighbors(pointBeingChecked);
+                foreach (Vector2Int newPoint in neighbors)
+                {
+                    if (!possiblePoints.Contains(newPoint))
+                    {
+                        possiblePoints.Add(newPoint);
+                    }
+                }
+            }
+        }
+        for (int ix = 0; ix <= 1; ix++)//Käydään läpi rakennuksen vasen ja oikea reuna...
+        {
+            for (int iy = 0; iy < size.y; iy++)
+            {
+                Vector2Int pointBeingChecked = point + new Vector2Int(size.x * ix, iy);
+                List<Vector2Int> neighbors = FindNeighbors(pointBeingChecked);
+                foreach (Vector2Int newPoint in neighbors)
+                {
+                    if (!possiblePoints.Contains(newPoint))
+                    {
+                        possiblePoints.Add(newPoint);
+                    }
+                }
+            }
+        }
+        return possiblePoints;
+    }
+
+    List<Vector2Int> BuildingCoordinates(Vector2Int point, Vector2Int size)
+    {
+        List<Vector2Int> coordinates = new List<Vector2Int>();
+        for (int ix = 0; ix < size.x; ix++)
+        {
+            for (int iy = 0; iy < size.y; iy++)
+            {
+                Vector2Int pointBeingChecked = point + new Vector2Int(ix, iy);
+                coordinates.Add(pointBeingChecked);
+            }
+        }
+        return coordinates;
+    }
+
+    public List<Vector2Int> CorrectPathToBuilding(Vector2Int start, Vector2Int goal, Vector2Int buildingPoint, Vector2Int buildingSize)
+    {
+        List<Vector2Int> path = AStarPathFinding(start, goal, BuildingCoordinates(buildingPoint, buildingSize));
+        List<Vector2Int> coordinatesAroundBuilding = PointsAroundBuilding(buildingPoint, buildingSize);
+        for (int i = path.Count - 1; i > 0; i--)
+        {
+            if (!coordinatesAroundBuilding.Contains(path[i]))
+            {
+                path.RemoveAt(i);
+            }
+            else
+            {
+                return path;
+            }
+        }
+        return new List<Vector2Int>(); //Jos ei toiminutkaan?
     }
 }

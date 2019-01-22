@@ -7,10 +7,10 @@ public class UnitMovement : MonoBehaviour
 {
     public float speed;
     List<Vector2Int> path = new List<Vector2Int>();
-    int i; //Missä kohdassa path polkua ollaan menossa, huomioitava asia on että path tulee väärässä järjestyksesä. siis path[0] on maali
+    int i; //Missä kohdassa path polkua ollaan menossa.
     Rigidbody2D rb;
     Vector2 movingDirection;
-    Task currentTask;
+    public Task currentTask;
 
     private void Start()
     {
@@ -22,22 +22,22 @@ public class UnitMovement : MonoBehaviour
     {
         if (path.Count != 0)
         {
-            Vector2 vectorToNextPoint = path[i - 1] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position;
+            Vector2 vectorToNextPoint = path[i + 1] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position;
             if (Vector2.Dot(vectorToNextPoint, movingDirection) <= 0)
             {
-                i--;
-                if (i == 0)
+                i++;
+                if (i == path.Count - 1)
                 {
                     rb.velocity = Vector2.zero;
                     path.Clear();
-                    if (currentTask.taskName != GM.tasks[(int)TaskTypes.idle])
+                    if (currentTask.taskName != GM.tasks[TaskTypes.idle])
                     {
                         currentTask.taskScriptInstance = (MonoBehaviour)gameObject.AddComponent(Type.GetType(currentTask.taskName)); //Lisätään task nimellä löytyvä koodi jäbälle...
                     }
                 }
                 else
                 {
-                    movingDirection = (path[i - 1] - path[i]);
+                    movingDirection = (path[i + 1] - path[i]);
                     rb.velocity = speed * movingDirection.normalized;
                 }
             }
@@ -49,22 +49,18 @@ public class UnitMovement : MonoBehaviour
         return new Vector2((int)transform.position.x + 0.5f, (int)transform.position.y + 0.5f);
     }
 
-    public void Move(Vector2Int goal, Task newTask)
+    public void Move(List<Vector2Int> newPath, Task newTask)
     {
-        if (currentTask.taskScriptInstance != null)
+        if (currentTask != null && currentTask.taskScriptInstance != null)
         {
             Destroy(currentTask.taskScriptInstance);
         }
         currentTask = newTask;
-
-        path.Clear();
-        Vector2Int start = new Vector2Int((int)transform.position.x, (int)transform.position.y);
-        path = Map.ins.AStarPathFinding(start, goal);
-
+        path = newPath;
         if (path.Count > 0)
         {
-            i = path.Count - 1;
-            movingDirection = (path[i - 1] - path[i]);
+            i = 0;
+            movingDirection = (path[1] - path[0]);
             print(movingDirection);
             rb.velocity = speed * movingDirection.normalized;
         }

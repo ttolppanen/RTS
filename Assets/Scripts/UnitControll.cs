@@ -27,9 +27,24 @@ public class UnitControll : MonoBehaviour
             {
                 foreach (GameObject unit in chosenUnits)
                 {
-                    Vector2 mousePos = UsefullFunctions.GetMousePos();
-                    Task task = new Task(GM.tasks[(int)TaskTypes.idle], UsefullFunctions.MouseCast().collider.gameObject, null);
-                    unit.GetComponent<UnitMovement>().Move(new Vector2Int((int)mousePos.x, (int)mousePos.y), task);
+                    Task task;
+                    List<Vector2Int> path = new List<Vector2Int>();
+                    Vector2Int mousePos = UsefullFunctions.GetMousePosCoordinated();
+                    RaycastHit2D objectUnderMouse = UsefullFunctions.MouseCast();
+                    Vector2Int unitPos = UsefullFunctions.CoordinatePosition(unit.transform.position);
+                    if (objectUnderMouse.collider != null && objectUnderMouse.collider.tag == "Tree")
+                    {
+                        GameObject tree = objectUnderMouse.collider.gameObject;
+                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UsefullFunctions.CoordinatePosition(tree.transform.position), new Vector2Int(1, 1));
+                        task = new Task(GM.tasks[TaskTypes.cutWood], tree, null);
+                    }
+                    else
+                    {
+                        path = Map.ins.AStarPathFinding(unitPos, mousePos);
+                        task = new Task(GM.tasks[TaskTypes.idle], null, null);
+                    }
+
+                    unit.GetComponent<UnitMovement>().Move(path, task);
                 }
             }
         }
