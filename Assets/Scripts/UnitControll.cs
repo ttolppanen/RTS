@@ -11,8 +11,7 @@ public class UnitControll : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Vector2 mousePos = UsefullFunctions.GetMousePos();
-            Collider2D unitCollider = Physics2D.OverlapCircle(mousePos, 0.1f);
+            Collider2D unitCollider = UsefullFunctions.MouseCast().collider;
             if (unitCollider == null || unitCollider.tag != "Unit")
             {
                 chosenUnits.Clear();
@@ -21,9 +20,6 @@ public class UnitControll : MonoBehaviour
             {
                 chosenUnits.Add(unitCollider.gameObject);
             }
-
-            print(chosenUnits.Count);
-
         }
         else if (Input.GetMouseButtonDown(1))
         {
@@ -32,7 +28,8 @@ public class UnitControll : MonoBehaviour
                 foreach (GameObject unit in chosenUnits)
                 {
                     Vector2 mousePos = UsefullFunctions.GetMousePos();
-                    unit.GetComponent<UnitMovement>().Move(new Vector2Int((int)mousePos.x, (int)mousePos.y));
+                    Task task = new Task(GM.tasks[(int)TaskTypes.idle], UsefullFunctions.MouseCast().collider.gameObject, null);
+                    unit.GetComponent<UnitMovement>().Move(new Vector2Int((int)mousePos.x, (int)mousePos.y), task);
                 }
             }
         }

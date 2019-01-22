@@ -261,7 +261,8 @@ public class Map : MonoBehaviour
 
     float HeuresticEstimate(Vector2Int a, Vector2Int b)
     {
-        return Mathf.Abs(a.x - b.x + a.y - b.y); //Lasketaan vektroin a - b pituus. Mutta pitäisi riittää laskea ilman neliöjuurta ja potensseja. Siis vertaus on silti sama(?) (Huonosti selitetty :D)
+        Vector2 BtoA = a - b;
+        return BtoA.magnitude;
     }
 
     List<Vector2Int> ReconstructPath(IDictionary<Vector2Int, Vector2Int> cameFrom, Vector2Int current)
@@ -368,4 +369,3 @@ public class Map : MonoBehaviour
         return smallestPoint;
     }
 }
-public enum LandTypes {sea, grass, tree, sand, building, lastNumber};

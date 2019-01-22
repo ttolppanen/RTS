@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class UnitMovement : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class UnitMovement : MonoBehaviour
     int i; //Missä kohdassa path polkua ollaan menossa, huomioitava asia on että path tulee väärässä järjestyksesä. siis path[0] on maali
     Rigidbody2D rb;
     Vector2 movingDirection;
+    Task currentTask;
 
     private void Start()
     {
@@ -18,7 +20,7 @@ public class UnitMovement : MonoBehaviour
 
     private void Update()
     {
-        if(path.Count != 0)
+        if (path.Count != 0)
         {
             Vector2 vectorToNextPoint = path[i - 1] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position;
             if (Vector2.Dot(vectorToNextPoint, movingDirection) <= 0)
@@ -28,6 +30,10 @@ public class UnitMovement : MonoBehaviour
                 {
                     rb.velocity = Vector2.zero;
                     path.Clear();
+                    if (currentTask.taskName != GM.tasks[(int)TaskTypes.idle])
+                    {
+                        currentTask.taskScriptInstance = (MonoBehaviour)gameObject.AddComponent(Type.GetType(currentTask.taskName)); //Lisätään task nimellä löytyvä koodi jäbälle...
+                    }
                 }
                 else
                 {
@@ -43,12 +49,17 @@ public class UnitMovement : MonoBehaviour
         return new Vector2((int)transform.position.x + 0.5f, (int)transform.position.y + 0.5f);
     }
 
-    public void Move(Vector2Int goal)
+    public void Move(Vector2Int goal, Task newTask)
     {
+        if (currentTask.taskScriptInstance != null)
+        {
+            Destroy(currentTask.taskScriptInstance);
+        }
+        currentTask = newTask;
+
         path.Clear();
         Vector2Int start = new Vector2Int((int)transform.position.x, (int)transform.position.y);
         path = Map.ins.AStarPathFinding(start, goal);
-        print(path.Count);
 
         if (path.Count > 0)
         {
