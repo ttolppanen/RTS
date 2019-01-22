@@ -11,8 +11,7 @@ public class UnitControll : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Vector2 mousePos = UsefullFunctions.GetMousePos();
-            Collider2D unitCollider = Physics2D.OverlapCircle(mousePos, 0.1f);
+            Collider2D unitCollider = UsefullFunctions.MouseCast().collider;
             if (unitCollider == null || unitCollider.tag != "Unit")
             {
                 chosenUnits.Clear();
@@ -21,9 +20,6 @@ public class UnitControll : MonoBehaviour
             {
                 chosenUnits.Add(unitCollider.gameObject);
             }
-
-            print(chosenUnits.Count);
-
         }
         else if (Input.GetMouseButtonDown(1))
         {
@@ -31,8 +27,24 @@ public class UnitControll : MonoBehaviour
             {
                 foreach (GameObject unit in chosenUnits)
                 {
-                    Vector2 mousePos = UsefullFunctions.GetMousePos();
-                    unit.GetComponent<UnitMovement>().Move(new Vector2Int((int)mousePos.x, (int)mousePos.y));
+                    Task task;
+                    List<Vector2Int> path = new List<Vector2Int>();
+                    Vector2Int mousePos = UsefullFunctions.GetMousePosCoordinated();
+                    RaycastHit2D objectUnderMouse = UsefullFunctions.MouseCast();
+                    Vector2Int unitPos = UsefullFunctions.CoordinatePosition(unit.transform.position);
+                    if (objectUnderMouse.collider != null && objectUnderMouse.collider.tag == "Tree")
+                    {
+                        GameObject tree = objectUnderMouse.collider.gameObject;
+                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UsefullFunctions.CoordinatePosition(tree.transform.position), new Vector2Int(1, 1));
+                        task = new Task(GM.tasks[TaskTypes.cutWood], tree, null);
+                    }
+                    else
+                    {
+                        path = Map.ins.AStarPathFinding(unitPos, mousePos);
+                        task = new Task(GM.tasks[TaskTypes.idle], null, null);
+                    }
+
+                    unit.GetComponent<UnitMovement>().Move(path, task);
                 }
             }
         }
