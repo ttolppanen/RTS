@@ -30,10 +30,7 @@ public class UnitMovement : MonoBehaviour
                 {
                     rb.velocity = Vector2.zero;
                     path.Clear();
-                    if (currentTask.taskName != GM.tasks[TaskTypes.idle])
-                    {
-                        currentTask.taskScriptInstance = (MonoBehaviour)gameObject.AddComponent(Type.GetType(currentTask.taskName)); //Lisätään task nimellä löytyvä koodi jäbälle...
-                    }
+                    StartTask();
                 }
                 else
                 {
@@ -41,6 +38,14 @@ public class UnitMovement : MonoBehaviour
                     rb.velocity = speed * movingDirection.normalized;
                 }
             }
+        }
+    }
+
+    void StartTask()
+    {
+        if (currentTask.taskName != GM.tasks[TaskTypes.idle])
+        {
+            currentTask.taskScriptInstance = (MonoBehaviour)gameObject.AddComponent(Type.GetType(currentTask.taskName)); //Lisätään task nimellä löytyvä koodi jäbälle...
         }
     }
 
@@ -57,12 +62,17 @@ public class UnitMovement : MonoBehaviour
         }
         currentTask = newTask;
         path = newPath;
-        if (path.Count > 0)
+        print(path.Count);
+        if (path.Count > 1)
         {
             i = 0;
             movingDirection = (path[1] - path[0]);
             print(movingDirection);
             rb.velocity = speed * movingDirection.normalized;
+        }
+        else
+        {
+            StartTask();
         }
     }
 }

@@ -12,6 +12,8 @@ public class BasicTree : MonoBehaviour
         if (wood <= 0)
         {
             Destroy(gameObject, 0.1f);
+            Vector2Int treePos = UsefullFunctions.CoordinatePosition(transform.position);
+            Map.ins.mapData[treePos.x, treePos.y] = (int)LandTypes.grass;
             return wood + amount;
         }
         return amount;
