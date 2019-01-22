@@ -16,8 +16,8 @@ public class CutWoodTask : MonoBehaviour
         tree = GetComponent<UnitMovement>().currentTask.objective;
         treeScript = tree.GetComponent<BasicTree>();
         StartCoroutine(CuttingWood());
-        cutTime = 1f;
-        treeCollectAmount = 15;
+        cutTime = 0.3f;
+        treeCollectAmount = 50;
     }
 
     IEnumerator CuttingWood()

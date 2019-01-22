@@ -14,7 +14,7 @@ public class Map : MonoBehaviour
     public GameObject[] resources;
     bool isGenerating = false;
 
-    //KORJATTAVIA JUTTUA*** Jos painetaan samaa ruutua kuin missä jo ollaan. Jos puu on viereisessä ruudussa ei tarvi liikkua niin sitten ei kanskaan ala keräys?
+    //KORJATTAVIA JUTTUA*** ?
 
     private void Awake()
     {
@@ -296,6 +296,10 @@ public class Map : MonoBehaviour
 
     public List<Vector2Int> AStarPathFinding(Vector2Int start, Vector2Int goal)
     {
+        if (start == goal)
+        {
+            return new List<Vector2Int>();
+        }
         List<Vector2Int> closedSet = new List<Vector2Int>(); //Pisteet jotka on jo tutkittu?
         List<Vector2Int> openSet = new List<Vector2Int>(); //Pisteet mitkä pitää tutkia?
         openSet.Add(start);
@@ -337,8 +341,16 @@ public class Map : MonoBehaviour
         return new List<Vector2Int>(); //Jos ei löydy polkua niin tulee tyhjä lista...
     }
 
-    public List<Vector2Int> AStarPathFinding(Vector2Int start, Vector2Int goal, List<Vector2Int> buildingCoordinates)
+    public List<Vector2Int> AStarPathFinding(Vector2Int start, Vector2Int goal, List<Vector2Int> buildingCoordinates, Vector2Int buildingSize)
     {
+        if (start == goal)
+        {
+            return new List<Vector2Int>();
+        }
+        if (!IsAccessible(goal, buildingSize))
+        {
+            return new List<Vector2Int>() { new Vector2Int(-999, -999) };
+        }
         List<Vector2Int> closedSet = new List<Vector2Int>(); //Pisteet jotka on jo tutkittu?
         List<Vector2Int> openSet = new List<Vector2Int>(); //Pisteet mitkä pitää tutkia?
         openSet.Add(start);
@@ -438,17 +450,39 @@ public class Map : MonoBehaviour
     List<Vector2Int> PointsAroundBuilding(Vector2Int point, Vector2Int size)
     {
         List<Vector2Int> possiblePoints = new List<Vector2Int>();
+        print(point);
         for (int iy = 0; iy <= 1; iy++) //Käydään läpi rakennuksen ala ja ylä reuna...
         {
             for (int ix = 0; ix < size.x; ix++)
             {
-                Vector2Int pointBeingChecked = point + new Vector2Int(ix, size.y * iy);
-                List<Vector2Int> neighbors = FindNeighbors(pointBeingChecked);
-                foreach (Vector2Int newPoint in neighbors)
+                Vector2Int pointBeingChecked = point + new Vector2Int(ix, (size.y - 1) * iy + (2 * iy - 1)); //(2 * iy - 1) tekee sen että kun iy = 0 niin katsotaan rakennuksen alareunaa, ja sitte iy= 1 niin yläreunaa. (Siis reunasta yks kauemmaksi(?))
+                if (IsInsideMap(pointBeingChecked))
                 {
-                    if (!possiblePoints.Contains(newPoint))
+                    if (GM.allowedLand.Contains((LandTypes)mapData[pointBeingChecked.x, pointBeingChecked.y]))
                     {
-                        possiblePoints.Add(newPoint);
+                        possiblePoints.Add(pointBeingChecked);
+                    }
+                }
+                if (ix == 0)
+                {
+                    Vector2Int newPoint = pointBeingChecked + new Vector2Int(-1, 0);//vasen alareuna ja yläreuna
+                    if (IsInsideMap(newPoint))
+                    {
+                        if (GM.allowedLand.Contains((LandTypes)mapData[newPoint.x, newPoint.y]))
+                        {
+                            possiblePoints.Add(newPoint);
+                        }
+                    }
+                }
+                if (ix == size.x - 1)
+                {
+                    Vector2Int newPoint = pointBeingChecked + new Vector2Int(1, 0);//oikea alareuna ja yläreuna
+                    if (IsInsideMap(newPoint))
+                    {
+                        if (GM.allowedLand.Contains((LandTypes)mapData[newPoint.x, newPoint.y]))
+                        {
+                            possiblePoints.Add(newPoint);
+                        }
                     }
                 }
             }
@@ -457,13 +491,12 @@ public class Map : MonoBehaviour
         {
             for (int iy = 0; iy < size.y; iy++)
             {
-                Vector2Int pointBeingChecked = point + new Vector2Int(size.x * ix, iy);
-                List<Vector2Int> neighbors = FindNeighbors(pointBeingChecked);
-                foreach (Vector2Int newPoint in neighbors)
+                Vector2Int pointBeingChecked = point + new Vector2Int((size.x - 1) * ix + (2 * ix - 1), iy);
+                if (IsInsideMap(pointBeingChecked))
                 {
-                    if (!possiblePoints.Contains(newPoint))
+                    if (GM.allowedLand.Contains((LandTypes)mapData[pointBeingChecked.x, pointBeingChecked.y]))
                     {
-                        possiblePoints.Add(newPoint);
+                        possiblePoints.Add(pointBeingChecked);
                     }
                 }
             }
@@ -487,7 +520,11 @@ public class Map : MonoBehaviour
 
     public List<Vector2Int> CorrectPathToBuilding(Vector2Int start, Vector2Int goal, Vector2Int buildingPoint, Vector2Int buildingSize)
     {
-        List<Vector2Int> path = AStarPathFinding(start, goal, BuildingCoordinates(buildingPoint, buildingSize));
+        List<Vector2Int> path = AStarPathFinding(start, goal, BuildingCoordinates(buildingPoint, buildingSize), buildingSize);
+        if (path.Count == 1 && path[0] == new Vector2Int(-999, -999))
+        {
+            return path;
+        }
         List<Vector2Int> coordinatesAroundBuilding = PointsAroundBuilding(buildingPoint, buildingSize);
         for (int i = path.Count - 1; i > 0; i--)
         {
@@ -501,5 +538,15 @@ public class Map : MonoBehaviour
             }
         }
         return new List<Vector2Int>(); //Jos ei toiminutkaan?
+    }
+
+    bool IsAccessible(Vector2Int point, Vector2Int size)
+    {
+        List<Vector2Int> pointsAroundBuilding = PointsAroundBuilding(point, size);
+        if (pointsAroundBuilding.Count == 0)
+        {
+            return false;
+        }
+        return true;
     }
 }

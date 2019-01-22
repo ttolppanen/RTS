@@ -27,11 +27,13 @@ public class UnitControll : MonoBehaviour
             {
                 foreach (GameObject unit in chosenUnits)
                 {
-                    Task task;
+                    Task task = new Task(GM.tasks[TaskTypes.idle], null, null);
                     List<Vector2Int> path = new List<Vector2Int>();
+
                     Vector2Int mousePos = UsefullFunctions.GetMousePosCoordinated();
                     RaycastHit2D objectUnderMouse = UsefullFunctions.MouseCast();
                     Vector2Int unitPos = UsefullFunctions.CoordinatePosition(unit.transform.position);
+
                     if (objectUnderMouse.collider != null && objectUnderMouse.collider.tag == "Tree")
                     {
                         GameObject tree = objectUnderMouse.collider.gameObject;
@@ -41,10 +43,11 @@ public class UnitControll : MonoBehaviour
                     else
                     {
                         path = Map.ins.AStarPathFinding(unitPos, mousePos);
-                        task = new Task(GM.tasks[TaskTypes.idle], null, null);
                     }
-
-                    unit.GetComponent<UnitMovement>().Move(path, task);
+                    if (!(path.Count == 1 && path[0] == new Vector2Int(-999, -999)))//jos path[0] = -999,-999 niin ei toimi...
+                    {
+                        unit.GetComponent<UnitMovement>().Move(path, task);
+                    }
                 }
             }
         }
