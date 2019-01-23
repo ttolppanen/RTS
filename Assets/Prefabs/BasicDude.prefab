@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6739369405496992391}
   - component: {fileID: 6739369405496992390}
   - component: {fileID: 836413331906385000}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BasicDude
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 1
   m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
@@ -117,6 +117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  repulsionStrength: 150
 --- !u!58 &6739369405496992390
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -145,4 +146,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7341824f7c1f5664790d5bd1a86d88a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxResourceAmount: 100
+  maxResourceAmount: 5000

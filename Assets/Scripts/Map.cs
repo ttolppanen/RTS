@@ -285,6 +285,10 @@ public class Map : MonoBehaviour
 
     public List<Vector2Int> AStarPathFinding(Vector2Int start, Vector2Int goal)
     {
+        if (!GM.allowedLand.Contains((LandTypes)mapData[goal.x, goal.y]))
+        {
+            return new List<Vector2Int>() { new Vector2Int(-999, -999) };
+        }
         if (start == goal)
         {
             return new List<Vector2Int>();
@@ -448,7 +452,6 @@ public class Map : MonoBehaviour
     List<Vector2Int> PointsAroundBuilding(Vector2Int point, Vector2Int size)
     {
         List<Vector2Int> possiblePoints = new List<Vector2Int>();
-        print(point);
         for (int iy = 0; iy <= 1; iy++) //Käydään läpi rakennuksen ala ja ylä reuna...
         {
             for (int ix = 0; ix < size.x; ix++)
@@ -544,6 +547,40 @@ public class Map : MonoBehaviour
         if (pointsAroundBuilding.Count == 0)
         {
             return false;
+        }
+        return true;
+    }
+
+    bool IsAccessible(Vector2Int point)
+    {
+        List<Vector2Int> pointsAroundBuilding = PointsAroundBuilding(point, new Vector2Int(1, 1));
+        if (pointsAroundBuilding.Count == 0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public bool AddBuildingToMap(Vector2Int point, Vector2Int size)
+    {
+        for (int iy = 0; iy < size.y; iy++)//tarkistetaan ensin voiko rakennuksen rakentaa tähän.
+        {
+            for (int ix = 0; ix < size.x; ix++)
+            {
+                Vector2Int testPoint = point + new Vector2Int(ix, iy);
+                if (!IsInsideMap(testPoint) || !GM.allowedLand.Contains((LandTypes)mapData[testPoint.x, testPoint.y]))
+                {
+                    return false;
+                }
+            }
+        }
+        for (int iy = 0; iy < size.y; iy++)//sitten vasta asetetaan rakennus.
+        {
+            for (int ix = 0; ix < size.x; ix++)
+            {
+                Vector2Int testPoint = point + new Vector2Int(ix, iy);
+                mapData[testPoint.x, testPoint.y] = (int)LandTypes.building;
+            }
         }
         return true;
     }
