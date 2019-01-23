@@ -5,20 +5,28 @@ using UnityEngine;
 public class UnitControll : MonoBehaviour
 {
     public List<GameObject> chosenUnits = new List<GameObject>(); //Valitut ukot...
+    Vector2 boxMouseStart;
+    Vector2 boxMouseEnd;
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Collider2D unitCollider = UsefullFunctions.MouseCast().collider;
-            if (unitCollider == null || unitCollider.tag != "Unit")
+            boxMouseStart = UsefullFunctions.GetMousePos();
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            boxMouseEnd = UsefullFunctions.GetMousePos();
+            Vector2 boxSize = boxMouseEnd - boxMouseStart;
+            boxSize.x = Mathf.Abs(boxSize.x);
+            boxSize.y = Mathf.Abs(boxSize.y);
+            RaycastHit2D[] hits = Physics2D.BoxCastAll((boxMouseStart + boxMouseEnd) / 2f, boxSize, 0f, Vector2.zero, 0f, LayerMask.GetMask("Unit"));
+
+            chosenUnits.Clear();
+            foreach (RaycastHit2D hit in hits)
             {
-                chosenUnits.Clear();
-            }
-            else if (!chosenUnits.Contains(unitCollider.gameObject))
-            {
-                chosenUnits.Add(unitCollider.gameObject);
+                chosenUnits.Add(hit.transform.gameObject);
             }
         }
         else if (Input.GetMouseButtonDown(1))

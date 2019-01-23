@@ -11,6 +11,9 @@ public class UnitMovement : MonoBehaviour
     Rigidbody2D rb;
     Vector2 movingDirection;
     public Task currentTask;
+    public float acceleration;
+    public float topSpeed;
+    public float repulsionStrength;
 
     private void Start()
     {
@@ -35,9 +38,20 @@ public class UnitMovement : MonoBehaviour
                 else
                 {
                     movingDirection = (path[i + 1] - path[i]);
-                    rb.velocity = speed * movingDirection.normalized;
                 }
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (path.Count > 0)
+        {
+            rb.AddForce(rb.mass * movingDirection.normalized * acceleration * rb.drag);
+        }
+        if (rb.velocity.magnitude > topSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * topSpeed;
         }
     }
 
@@ -62,17 +76,23 @@ public class UnitMovement : MonoBehaviour
         }
         currentTask = newTask;
         path = newPath;
-        print(path.Count);
         if (path.Count > 1)
         {
             i = 0;
             movingDirection = (path[1] - path[0]);
-            print(movingDirection);
-            rb.velocity = speed * movingDirection.normalized;
         }
         else
         {
             StartTask();
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Unit")
+        {
+            Vector2 awayFromOther = transform.position - collision.transform.position;
+            rb.AddForce(awayFromOther.normalized * Time.deltaTime * repulsionStrength * rb.mass * rb.drag);
         }
     }
 }
