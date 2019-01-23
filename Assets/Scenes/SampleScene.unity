@@ -554,6 +554,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 873d2ff22c8f26b4fba24b0d81ce58d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testi: {fileID: 3160073859154048350, guid: 74b4872b974db6342b5b3a4252b3f25c, type: 3}
   size: {x: 200, y: 200}
   numberOfLand: 10000
   numberOfForests: 20

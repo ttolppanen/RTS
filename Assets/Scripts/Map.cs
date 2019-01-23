@@ -6,6 +6,8 @@ public class Map : MonoBehaviour
 {
     public static Map ins; //Instanssi
 
+    public GameObject testi;
+
     public Vector2Int size;
     public int numberOfLand;
     public int numberOfForests;
@@ -255,7 +257,7 @@ public class Map : MonoBehaviour
             {
                 if (mapData[ix, iy] == (int)LandTypes.tree)
                 {
-                    Instantiate(resources[0], new Vector3(ix, iy, 0), Quaternion.identity);
+                    Instantiate(resources[0], new Vector3(ix, iy, 0), Quaternion.identity).transform.parent = transform; //Luodaan ja laitetaan samalla mapin lapseksi niin ei näytä niin täydeltä editorissa...
                 }
             }
         }
@@ -281,19 +283,6 @@ public class Map : MonoBehaviour
         return totalPath;
     }
 
-    Dictionary<Vector2Int, float> InitGFScore()
-    {
-        Dictionary<Vector2Int, float> score = new Dictionary<Vector2Int, float>();
-        for (int iy = 0; iy < size.y; iy++)
-        {
-            for (int ix = 0; ix < size.x; ix++)
-            {
-                score.Add(new Vector2Int(ix, iy), 9999);
-            }
-        }
-        return score;
-    }
-
     public List<Vector2Int> AStarPathFinding(Vector2Int start, Vector2Int goal)
     {
         if (start == goal)
@@ -304,9 +293,9 @@ public class Map : MonoBehaviour
         List<Vector2Int> openSet = new List<Vector2Int>(); //Pisteet mitkä pitää tutkia?
         openSet.Add(start);
         IDictionary<Vector2Int, Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>(); //Tyhjä kartta aluksi. Lopuksi jollakin avaimella saadaan piste mistä kannattee mennä siihen pisteeseen. cameFrom[jokinPiste] = lyhinPiste tästä tuohon johonkin pisteeseen(?) EHKÄ?
-        IDictionary<Vector2Int, float> gScore = InitGFScore(); //Hinta alkupisteetä tähän.
+        IDictionary<Vector2Int, float> gScore = new Dictionary<Vector2Int, float>(); //Hinta alkupisteetä tähän.
         gScore[start] = 0;
-        IDictionary<Vector2Int, float> fScore = InitGFScore(); //Koko matkan hinta tänne?
+        IDictionary<Vector2Int, float> fScore = new Dictionary<Vector2Int, float>(); //Koko matkan hinta tänne?
         fScore[start] = HeuresticEstimate(start, goal);
         while (openSet.Count != 0)
         {
@@ -324,7 +313,7 @@ public class Map : MonoBehaviour
                 {
                     continue;
                 }
-                float tentativeGScore = gScore[current] + ((Vector2)current - (Vector2)neighbor).magnitude;
+                float tentativeGScore = gScore[current] + (current - neighbor).magnitude;
                 if (!openSet.Contains(neighbor))
                 {
                     openSet.Add(neighbor);
@@ -333,9 +322,14 @@ public class Map : MonoBehaviour
                 {
                     continue;
                 }
+                
                 cameFrom[neighbor] = current;
                 gScore[neighbor] = tentativeGScore;
                 fScore[neighbor] = tentativeGScore + HeuresticEstimate(neighbor, goal);
+                if (neighbor == goal)
+                {
+                    break;
+                }
             }
         }
         return new List<Vector2Int>(); //Jos ei löydy polkua niin tulee tyhjä lista...
@@ -355,9 +349,9 @@ public class Map : MonoBehaviour
         List<Vector2Int> openSet = new List<Vector2Int>(); //Pisteet mitkä pitää tutkia?
         openSet.Add(start);
         IDictionary<Vector2Int, Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>(); //Tyhjä kartta aluksi. Lopuksi jollakin avaimella saadaan piste mistä kannattee mennä siihen pisteeseen. cameFrom[jokinPiste] = lyhinPiste tästä tuohon johonkin pisteeseen(?) EHKÄ?
-        IDictionary<Vector2Int, float> gScore = InitGFScore(); //Hinta alkupisteetä tähän.
+        IDictionary<Vector2Int, float> gScore = new Dictionary<Vector2Int, float>(); //Hinta alkupisteetä tähän.
         gScore[start] = 0;
-        IDictionary<Vector2Int, float> fScore = InitGFScore(); //Koko matkan hinta tänne?
+        IDictionary<Vector2Int, float> fScore = new Dictionary<Vector2Int, float>(); //Koko matkan hinta tänne?
         fScore[start] = HeuresticEstimate(start, goal);
         while (openSet.Count != 0)
         {
@@ -387,6 +381,10 @@ public class Map : MonoBehaviour
                 cameFrom[neighbor] = current;
                 gScore[neighbor] = tentativeGScore;
                 fScore[neighbor] = tentativeGScore + HeuresticEstimate(neighbor, goal);
+                if (neighbor == goal)
+                {
+                    break;
+                }
             }
         }
         return new List<Vector2Int>(); //Jos ei löydy polkua niin tulee tyhjä lista...
@@ -438,7 +436,7 @@ public class Map : MonoBehaviour
         Vector2Int smallestPoint = openSet[0];
         foreach (Vector2Int point in openSet)
         {
-            if (fScore[point] < compare)
+            if (fScore.ContainsKey(point) &&fScore[point] < compare)
             {
                 smallestPoint = point;
                 compare = fScore[point];
