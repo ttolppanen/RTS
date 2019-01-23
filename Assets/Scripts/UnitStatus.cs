@@ -13,7 +13,6 @@ public class UnitStatus : MonoBehaviour
 
     public void StorageWood(int amount, ResourceTypes type) //Palautetaan puut mitkä ei mahdu kyytiin.
     {
-        resources[type] += amount;
-        print(resources[type]);
+        Resources.ins.AddResource(amount, type);
     }
 }

@@ -584,4 +584,49 @@ public class Map : MonoBehaviour
         }
         return true;
     }
+
+    public Vector2Int FindClosestLand(Vector2Int start, LandTypes type, int maxNodesChecked)
+    {
+        Vector2Int testPos = start;
+        for (int sideLength = 1; true; sideLength++)
+        {
+            for (int ii = 0; ii <=1; ii++)
+            {
+                for (int i = 0; i < sideLength; i++)
+                {
+                    if (sideLength % 2 == 0)
+                    {
+                        if (ii == 0)
+                        {
+                            testPos += new Vector2Int(0, -1);
+                        }
+                        else
+                        {
+                            testPos += new Vector2Int(-1, 0);
+                        }
+                    }
+                    else
+                    {
+                        if (ii == 0)
+                        {
+                            testPos += new Vector2Int(0, 1);
+                        }
+                        else
+                        {
+                             testPos += new Vector2Int(1, 0);
+                        }
+                    }
+                    if (mapData[testPos.x, testPos.y] == (int)type)
+                    {
+                        return testPos;
+                    }
+                    maxNodesChecked--;
+                    if (maxNodesChecked == 0)
+                    {
+                        return new Vector2Int(-999, -999);
+                    }
+                }
+            }
+        }
+    }
 }
