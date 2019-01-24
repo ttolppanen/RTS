@@ -70,6 +70,10 @@ public class UnitMovement : MonoBehaviour
 
     public void Move(List<Vector2Int> newPath, Task newTask)
     {
+        if (newPath.Count != 0 && newPath[0] == new Vector2Int(-999, -999)) //ei pitäisi oikeasti koskaan päässä tänne?
+        {
+            return;
+        }
         if (currentTask != null && currentTask.taskScriptInstance != null)
         {
             Destroy(currentTask.taskScriptInstance);
