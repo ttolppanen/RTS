@@ -4,11 +4,26 @@ using UnityEngine;
 
 public class UnitControll : MonoBehaviour
 {
+    public static UnitControll ins;
+
     public List<GameObject> chosenUnits = new List<GameObject>(); //Valitut ukot...
     Vector2 boxMouseStart;
     Vector2 boxMouseEnd;
 
-    // Update is called once per frame
+    private void Awake()
+    {
+        {
+        if (ins == null)
+        {
+            ins = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+        }//ins määrittely...
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
