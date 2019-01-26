@@ -53,7 +53,7 @@ public class UnitControll : MonoBehaviour
             if (boxMouseEnd == boxMouseStart)
             {
                 hits[0] = UsefullFunctions.MouseCast();
-            }
+             }
             else
             {
                 selectingBoxGraphic.transform.localScale = boxSize;
@@ -66,7 +66,10 @@ public class UnitControll : MonoBehaviour
             chosenUnits.Clear();
             foreach (RaycastHit2D hit in hits)
             {
-                chosenUnits.Add(hit.transform.gameObject);
+                if (hit.collider != null)
+                {
+                    chosenUnits.Add(hit.transform.gameObject);
+                }
             }
         }
         else if (Input.GetMouseButtonDown(1))
@@ -75,7 +78,7 @@ public class UnitControll : MonoBehaviour
             {
                 foreach (GameObject unit in chosenUnits)
                 {
-                    Task task = new Task(GM.tasks[TaskTypes.idle], null, null);
+                    Task task = new Task(GM.tasks[TaskTypes.idle], null);
                     List<Vector2Int> path = new List<Vector2Int>();
 
                     Vector2Int mousePos = UsefullFunctions.GetMousePosCoordinated();
@@ -86,7 +89,7 @@ public class UnitControll : MonoBehaviour
                     {
                         GameObject tree = objectUnderMouse.collider.gameObject;
                         path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UsefullFunctions.CoordinatePosition(tree.transform.position), new Vector2Int(1, 1));
-                        task = new Task(GM.tasks[TaskTypes.cutWood], tree, null);
+                        task = new Task(GM.tasks[TaskTypes.cutWood], tree);
                     }
                     else
                     {
