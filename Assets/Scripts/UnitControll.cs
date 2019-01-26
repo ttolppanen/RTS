@@ -9,6 +9,8 @@ public class UnitControll : MonoBehaviour
     public List<GameObject> chosenUnits = new List<GameObject>(); //Valitut ukot...
     Vector2 boxMouseStart;
     Vector2 boxMouseEnd;
+    Vector2 boxSize;
+    public GameObject selectingBoxGraphic;
 
     private void Awake()
     {
@@ -30,14 +32,37 @@ public class UnitControll : MonoBehaviour
         {
             boxMouseStart = UsefullFunctions.GetMousePos();
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButton(0))
         {
             boxMouseEnd = UsefullFunctions.GetMousePos();
-            Vector2 boxSize = boxMouseEnd - boxMouseStart;
-            boxSize.x = Mathf.Abs(boxSize.x);
-            boxSize.y = Mathf.Abs(boxSize.y);
-            RaycastHit2D[] hits = Physics2D.BoxCastAll((boxMouseStart + boxMouseEnd) / 2f, boxSize, 0f, Vector2.zero, 0f, LayerMask.GetMask("Unit"));
+            boxSize = boxMouseEnd - boxMouseStart;
+            if (boxMouseEnd == boxMouseStart)
+            {
+                selectingBoxGraphic.SetActive(false);
+            }
+            else
+            {
+                selectingBoxGraphic.SetActive(true);
+                selectingBoxGraphic.transform.localScale = boxSize;
+                selectingBoxGraphic.transform.position = boxMouseStart;
+            }
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            RaycastHit2D[] hits = new RaycastHit2D[1];
+            if (boxMouseEnd == boxMouseStart)
+            {
+                hits[0] = UsefullFunctions.MouseCast();
+            }
+            else
+            {
+                selectingBoxGraphic.transform.localScale = boxSize;
+                boxSize.x = Mathf.Abs(boxSize.x);
+                boxSize.y = Mathf.Abs(boxSize.y);
+                hits = Physics2D.BoxCastAll((boxMouseStart + boxMouseEnd) / 2f, boxSize, 0f, Vector2.zero, 0f, LayerMask.GetMask("Unit"));
+            }
 
+            selectingBoxGraphic.SetActive(false);
             chosenUnits.Clear();
             foreach (RaycastHit2D hit in hits)
             {

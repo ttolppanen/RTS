@@ -101,7 +101,7 @@ public class Map : MonoBehaviour
 
     bool IsInsideMap(Vector2Int pos)
     {
-        if (pos.x >= 0 && pos.x <= size.x && pos.y >= 0 && pos.y <= size.y)
+        if (pos.x >= 0 && pos.x < size.x && pos.y >= 0 && pos.y < size.y)
         {
             return true;
         }
