@@ -149,7 +149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4be82eb4cacb8a14db857aff5cb98985, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttons: 00000000
+  UI: 0
+  hierachy: 1
 --- !u!114 &836413331906385000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,4 +163,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7341824f7c1f5664790d5bd1a86d88a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carryingAmount: 0
+  carryingType: 0
   maxResourceAmount: 5000

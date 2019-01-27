@@ -53,7 +53,7 @@ public class UnitControll : MonoBehaviour
             if (boxMouseEnd == boxMouseStart)
             {
                 hits[0] = UsefullFunctions.MouseCast();
-             }
+            }
             else
             {
                 selectingBoxGraphic.transform.localScale = boxSize;
@@ -64,6 +64,8 @@ public class UnitControll : MonoBehaviour
 
             selectingBoxGraphic.SetActive(false);
             chosenUnits.Clear();
+            UIChooser.ins.deActivateAll();
+
             foreach (RaycastHit2D hit in hits)
             {
                 if (hit.collider != null)
@@ -71,6 +73,22 @@ public class UnitControll : MonoBehaviour
                     chosenUnits.Add(hit.transform.gameObject);
                 }
             }
+            int highestHierachy = -1;
+            GameObject showThisUnitsUI = chosenUnits[0];
+            foreach (GameObject unit in chosenUnits)
+            {
+                if (highestHierachy < unit.GetComponent<Buttons>().hierachy)
+                {
+                    showThisUnitsUI = unit;
+                    highestHierachy = unit.GetComponent<Buttons>().hierachy;
+                }
+            }
+
+            Buttons buttons = showThisUnitsUI.GetComponent<Buttons>();
+
+            UIChooser.ins.activateUI(buttons.UI);
+
+
         }
         else if (Input.GetMouseButtonDown(1))
         {

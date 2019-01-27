@@ -4,20 +4,9 @@ using UnityEngine;
 
 public class Buttons : MonoBehaviour
 {
-    public ButtonTypes[] buttons;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public UITypes UI;
+    public int hierachy;
 
 
 }
-public enum ButtonTypes { Stop };
+public enum UITypes { Worker };
