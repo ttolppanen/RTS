@@ -94,7 +94,7 @@ public class UnitMovement : MonoBehaviour
     public void Stop()
     {
         path.Clear();
-        currentTask = new Task(GM.tasks[TaskTypes.idle], null, null);
+        currentTask = new Task(GM.tasks[TaskTypes.idle], null);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
