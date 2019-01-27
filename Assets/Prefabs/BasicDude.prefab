@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6739369405496992386}
   - component: {fileID: 6739369405496992391}
   - component: {fileID: 6739369405496992390}
+  - component: {fileID: 2041694559144902776}
   - component: {fileID: 836413331906385000}
   m_Layer: 8
   m_Name: BasicDude
@@ -117,6 +118,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  acceleration: 0
+  topSpeed: 0
   repulsionStrength: 150
 --- !u!58 &6739369405496992390
 CircleCollider2D:
@@ -134,6 +137,19 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.3
+--- !u!114 &2041694559144902776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6739369405496992387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4be82eb4cacb8a14db857aff5cb98985, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttons: 00000000
 --- !u!114 &836413331906385000
 MonoBehaviour:
   m_ObjectHideFlags: 0
