@@ -8,10 +8,10 @@ public class Task
     public GameObject objective; //Peli objeckti mille taski tehdään, esim. puu?
     public MonoBehaviour taskScriptInstance; //Sitten kun taski on luotu niin pietetään tässä tallessa se scripti.
 
-    public Task(string taskName, GameObject objective, MonoBehaviour taskScriptInstance)
+    public Task(string taskName, GameObject objective)
     {
         this.taskName = taskName;
         this.objective = objective;
-        this.taskScriptInstance = taskScriptInstance;
+        taskScriptInstance = null;
     }
 }

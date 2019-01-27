@@ -8,13 +8,13 @@ public class CutWoodTask : MonoBehaviour
     BasicTree treeScript;
     float cutTime;
     int treeCollectAmount;
-    UnitStatus status;
+    UnitResources resources;
     UnitMovement movScript;
     float time;
 
     private void Start()
     {
-        status = GetComponent<UnitStatus>();
+        resources = GetComponent<UnitResources>();
         movScript = GetComponent<UnitMovement>();
         tree = movScript.currentTask.objective;
         if (tree == null)//Jos on käynyt tosi huono tuuri ja juuri viimeframen aikana puu on tuhoutunut? Vaikka liikkumisen aikana tai jtn emt.
@@ -46,10 +46,15 @@ public class CutWoodTask : MonoBehaviour
 
     void CutWood()
     {
-        int amount = Mathf.Min(treeCollectAmount, status.maxResourceAmount - status.resources[ResourceTypes.wood]);
+        resources.UpdateCarryingType(ResourceTypes.wood);
+        int amount = Mathf.Min(treeCollectAmount, resources.maxResourceAmount - resources.carryingAmount); //Hakataanko koko määrä vai vaan niin paljon kuin mahtuu taskuun... 
         amount = treeScript.CutWood(amount);
-        status.StorageWood(amount, ResourceTypes.wood);
-        if (treeScript.isDead)
+        bool isCarryingMax = resources.Storage(amount);
+        if (isCarryingMax)
+        {
+            BringBackWood();
+        }
+        else if (treeScript.isDead)
         {
             Reset();
         }
@@ -84,11 +89,24 @@ public class CutWoodTask : MonoBehaviour
         }
         Vector2Int newTreeLocation = UsefullFunctions.CoordinatePosition(tree.transform.position);
         List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UsefullFunctions.CoordinatePosition(transform.position), newTreeLocation, newTreeLocation, new Vector2Int(1, 1));
-        Task task = new Task(GM.tasks[TaskTypes.cutWood], tree, null);
+        Task task = new Task(GM.tasks[TaskTypes.cutWood], tree);
         if (!(path.Count != 0 && path[0] == new Vector2Int(-999, -999)))
         {
             movScript.Move(path, task);
         }
         Destroy(this);
+    }
+    
+    void BringBackWood()
+    {
+        GameObject storagePoint = Resources.ins.storagePoints[ResourceTypes.wood][0];
+        if (storagePoint != null)
+        {
+            Vector2Int buildingSize = storagePoint.GetComponent<BuildingStatus>().size;
+            Vector2Int buildingPoint = UsefullFunctions.CoordinatePosition(storagePoint.transform.position);
+            List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UsefullFunctions.CoordinatePosition(transform.position), buildingPoint, buildingPoint, buildingSize);
+            Task task = new Task(GM.tasks[TaskTypes.bringBackWood], storagePoint);
+            movScript.Move(path, task);
+        }
     }
 }

@@ -101,7 +101,7 @@ public class Map : MonoBehaviour
 
     bool IsInsideMap(Vector2Int pos)
     {
-        if (pos.x >= 0 && pos.x <= size.x && pos.y >= 0 && pos.y <= size.y)
+        if (pos.x >= 0 && pos.x < size.x && pos.y >= 0 && pos.y < size.y)
         {
             return true;
         }
@@ -257,11 +257,11 @@ public class Map : MonoBehaviour
             {
                 if (mapData[ix, iy] == (int)LandTypes.tree)
                 {
-                    Instantiate(resources[0], new Vector3(ix, iy, 0), Quaternion.identity).transform.parent = transform; //Luodaan ja laitetaan samalla mapin lapseksi niin ei näytä niin täydeltä editorissa...
+                    Instantiate(resources[0], new Vector3(ix + Random.Range(0, 0.3f), iy + Random.Range(0, 0.3f), 0), Quaternion.identity).transform.parent = transform; //Luodaan ja laitetaan samalla mapin lapseksi niin ei näytä niin täydeltä editorissa... Hox että esineiden koordinaatti on vasemmassa alareunassa.
                 }
             }
         }
-    }
+    }//Sotkeeko randomi paikka???
 
     float HeuresticEstimate(Vector2Int a, Vector2Int b)
     {
