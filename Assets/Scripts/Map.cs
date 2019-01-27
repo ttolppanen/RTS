@@ -345,7 +345,7 @@ public class Map : MonoBehaviour
         {
             return new List<Vector2Int>();
         }
-        if (!IsAccessible(goal, buildingSize))
+        if (!IsBuildingAccessible(goal, buildingSize))
         {
             return new List<Vector2Int>() { new Vector2Int(-999, -999) };
         }
@@ -394,7 +394,7 @@ public class Map : MonoBehaviour
         return new List<Vector2Int>(); //Jos ei löydy polkua niin tulee tyhjä lista...
     }
 
-    List<Vector2Int> FindNeighbors(Vector2Int point, List<Vector2Int> buildingCoordinates) //PITÄÄKÖ TEHÄ ALLOWED LAND TYPES JOSKUS??? JOO PITÄÄ JA THTY
+    List<Vector2Int> FindNeighbors(Vector2Int point, List<Vector2Int> buildingCoordinates) //PITÄÄKÖ TEHÄ ALLOWED LAND TYPES JOSKUS??? JOO PITÄÄ JA TEHTY
     {
         List<Vector2Int> neighbors = new List<Vector2Int>();
         for (int iy = -1; iy <= 1; iy++)
@@ -539,9 +539,9 @@ public class Map : MonoBehaviour
             }
         }
         return new List<Vector2Int>(); //Jos ei toiminutkaan?
-    }
+    }//Käytä tätä kun haet reittiä rakennukseen, etkä yhteen pisteeseen
 
-    bool IsAccessible(Vector2Int point, Vector2Int size)
+    bool IsBuildingAccessible(Vector2Int point, Vector2Int size)
     {
         List<Vector2Int> pointsAroundBuilding = PointsAroundBuilding(point, size);
         if (pointsAroundBuilding.Count == 0)
@@ -549,21 +549,11 @@ public class Map : MonoBehaviour
             return false;
         }
         return true;
-    }
+    } //Pystyykö rakennuksen tykö edes menemään? Eli onko rakennuksen vieressä AllowedLand
 
-    bool IsAccessible(Vector2Int point)
+    public bool CanBeBuilt(Vector2Int point, Vector2Int size) //Palauttaa true jos kyseisen rakennukset voi rakentaa tähän pisteeseen
     {
-        List<Vector2Int> pointsAroundBuilding = PointsAroundBuilding(point, new Vector2Int(1, 1));
-        if (pointsAroundBuilding.Count == 0)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    public bool AddBuildingToMap(Vector2Int point, Vector2Int size)
-    {
-        for (int iy = 0; iy < size.y; iy++)//tarkistetaan ensin voiko rakennuksen rakentaa tähän.
+        for (int iy = 0; iy < size.y; iy++)
         {
             for (int ix = 0; ix < size.x; ix++)
             {
@@ -574,58 +564,17 @@ public class Map : MonoBehaviour
                 }
             }
         }
-        for (int iy = 0; iy < size.y; iy++)//sitten vasta asetetaan rakennus.
+        return true;
+    }
+
+    public void AddBuildingToMap(Vector2Int point, Vector2Int size)
+    {
+        for (int iy = 0; iy < size.y; iy++)
         {
             for (int ix = 0; ix < size.x; ix++)
             {
                 Vector2Int testPoint = point + new Vector2Int(ix, iy);
                 mapData[testPoint.x, testPoint.y] = (int)LandTypes.building;
-            }
-        }
-        return true;
-    }
-
-    public Vector2Int FindClosestLand(Vector2Int start, LandTypes type, int maxNodesChecked)
-    {
-        Vector2Int testPos = start;
-        for (int sideLength = 1; true; sideLength++)
-        {
-            for (int ii = 0; ii <=1; ii++)
-            {
-                for (int i = 0; i < sideLength; i++)
-                {
-                    if (sideLength % 2 == 0)
-                    {
-                        if (ii == 0)
-                        {
-                            testPos += new Vector2Int(0, -1);
-                        }
-                        else
-                        {
-                            testPos += new Vector2Int(-1, 0);
-                        }
-                    }
-                    else
-                    {
-                        if (ii == 0)
-                        {
-                            testPos += new Vector2Int(0, 1);
-                        }
-                        else
-                        {
-                             testPos += new Vector2Int(1, 0);
-                        }
-                    }
-                    if (mapData[testPos.x, testPos.y] == (int)type)
-                    {
-                        return testPos;
-                    }
-                    maxNodesChecked--;
-                    if (maxNodesChecked == 0)
-                    {
-                        return new Vector2Int(-999, -999);
-                    }
-                }
             }
         }
     }
