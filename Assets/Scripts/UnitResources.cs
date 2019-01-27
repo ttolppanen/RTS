@@ -33,4 +33,11 @@ public class UnitResources : MonoBehaviour
             carryingAmount = 0;
         }
     }
+
+    public int GiveResources()
+    {
+        int toGive = carryingAmount;
+        carryingAmount = 0;
+        return toGive;
+    }
 }

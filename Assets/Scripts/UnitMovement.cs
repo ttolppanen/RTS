@@ -74,10 +74,7 @@ public class UnitMovement : MonoBehaviour
         {
             return;
         }
-        if (currentTask != null && currentTask.taskScriptInstance != null)
-        {
-            Destroy(currentTask.taskScriptInstance);
-        }
+        ResetTaskInstance();
         currentTask = newTask;
         path = newPath;
         if (path.Count > 1)
@@ -94,7 +91,16 @@ public class UnitMovement : MonoBehaviour
     public void Stop()
     {
         path.Clear();
+        ResetTaskInstance();
         currentTask = new Task(GM.tasks[TaskTypes.idle], null);
+    }
+
+    void ResetTaskInstance()
+    {
+        if (currentTask != null && currentTask.taskScriptInstance != null)
+        {
+            Destroy(currentTask.taskScriptInstance);
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
