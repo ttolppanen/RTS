@@ -53,7 +53,7 @@ public class UnitControll : MonoBehaviour
             boxMouseStart = UsefullFunctions.GetMousePos();
             mouseState = MouseStates.choosingUnits;
         }
-        else if (Input.GetMouseButton(0))
+        else if (Input.GetMouseButton(0) && mouseState == MouseStates.choosingUnits)
         {
             boxMouseEnd = UsefullFunctions.GetMousePos();
             boxSize = boxMouseEnd - boxMouseStart;
@@ -68,7 +68,7 @@ public class UnitControll : MonoBehaviour
                 selectingBoxGraphic.transform.position = boxMouseStart;
             }
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0) && mouseState == MouseStates.choosingUnits)
         {
             RaycastHit2D[] hits = new RaycastHit2D[1];
             if (boxMouseEnd == boxMouseStart)
@@ -110,6 +110,7 @@ public class UnitControll : MonoBehaviour
             UIChooser.ins.activateUI(buttons.UI);
 
 
+            mouseState = MouseStates.idle;
         }
         else if (Input.GetMouseButtonDown(1))
         {
