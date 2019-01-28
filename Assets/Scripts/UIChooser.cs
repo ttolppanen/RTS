@@ -6,6 +6,7 @@ public class UIChooser : MonoBehaviour
 {
     public GameObject[] UIs;
     public static UIChooser ins;
+    
 
     private void Awake()
     {
@@ -36,5 +37,16 @@ public class UIChooser : MonoBehaviour
         {
             UI.SetActive(false);
         }
+    }
+
+    public void stopUnits()
+    {
+        List<GameObject> units = UnitControll.ins.giveChosenUnits();
+
+        foreach(GameObject unit in units)
+        {
+            unit.GetComponent<UnitMovement>().Stop();
+        }
+
     }
 }

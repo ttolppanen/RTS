@@ -12,6 +12,12 @@ public class UnitControll : MonoBehaviour
     Vector2 boxSize;
     public GameObject selectingBoxGraphic;
 
+    public List<GameObject> giveChosenUnits()
+    {
+        return chosenUnits;
+    }
+
+
     private void Awake()
     {
         {
