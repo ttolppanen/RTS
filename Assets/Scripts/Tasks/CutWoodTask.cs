@@ -62,12 +62,12 @@ public class CutWoodTask : MonoBehaviour
 
     GameObject FindANewTree(List<Vector2Int> alreadyChecked)
     {
-        Vector2Int newTreeLocation = Map.ins.FindClosestLand(UsefullFunctions.CoordinatePosition(transform.position), LandTypes.tree, 200, alreadyChecked);
+        Vector2Int newTreeLocation = Map.ins.FindClosestLand(UF.CoordinatePosition(transform.position), LandTypes.tree, 200, alreadyChecked);
         if (newTreeLocation == new Vector2Int(-999, -999))
         {
             return null;
         }
-        tree = UsefullFunctions.FetchGameObject(newTreeLocation + new Vector2(0.5f, 0.5f)); //0.5 että menee keskelle ruutua/nodea.
+        tree = UF.FetchGameObject(newTreeLocation + new Vector2(0.5f, 0.5f)); //0.5 että menee keskelle ruutua/nodea.
         if (tree.GetComponent<BasicTree>().isDead)
         {
             alreadyChecked.Add(newTreeLocation);
@@ -87,8 +87,8 @@ public class CutWoodTask : MonoBehaviour
             Destroy(this);
             return;
         }
-        Vector2Int newTreeLocation = UsefullFunctions.CoordinatePosition(tree.transform.position);
-        List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UsefullFunctions.CoordinatePosition(transform.position), newTreeLocation, newTreeLocation, new Vector2Int(1, 1));
+        Vector2Int newTreeLocation = UF.CoordinatePosition(tree.transform.position);
+        List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), newTreeLocation, newTreeLocation, new Vector2Int(1, 1));
         Task task = new Task(GM.tasks[TaskTypes.cutWood], tree);
         if (!(path.Count != 0 && path[0] == new Vector2Int(-999, -999)))
         {
@@ -103,8 +103,8 @@ public class CutWoodTask : MonoBehaviour
         {
             GameObject storagePoint = Resources.ins.storagePoints[ResourceTypes.wood][0];
             Vector2Int buildingSize = storagePoint.GetComponent<BuildingStatus>().size;
-            Vector2Int buildingPoint = UsefullFunctions.CoordinatePosition(storagePoint.transform.position);
-            List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UsefullFunctions.CoordinatePosition(transform.position), buildingPoint, buildingPoint, buildingSize);
+            Vector2Int buildingPoint = UF.CoordinatePosition(storagePoint.transform.position);
+            List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), buildingPoint, buildingPoint, buildingSize);
             Task task = new Task(GM.tasks[TaskTypes.bringBackWood], storagePoint);
             movScript.Move(path, task);
         }

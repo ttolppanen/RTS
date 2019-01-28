@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum MouseStates { idle, choosingUnits, building};
 
-public class UnitControll : MonoBehaviour
+public class MouseControl : MonoBehaviour
 {
-    public static UnitControll ins;
+    public static MouseControl ins;
 
     public MouseStates mouseState = MouseStates.idle;
     public List<GameObject> chosenUnits = new List<GameObject>(); //Valitut ukot...
@@ -43,19 +43,19 @@ public class UnitControll : MonoBehaviour
             return;
         }
 
-        if (UsefullFunctions.IsOnUI())
+        if (UF.IsOnUI())
         {
             return;
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            boxMouseStart = UsefullFunctions.GetMousePos();
+            boxMouseStart = UF.GetMousePos();
             mouseState = MouseStates.choosingUnits;
         }
         else if (Input.GetMouseButton(0))
         {
-            boxMouseEnd = UsefullFunctions.GetMousePos();
+            boxMouseEnd = UF.GetMousePos();
             boxSize = boxMouseEnd - boxMouseStart;
             if (boxMouseEnd == boxMouseStart)
             {
@@ -73,7 +73,7 @@ public class UnitControll : MonoBehaviour
             RaycastHit2D[] hits = new RaycastHit2D[1];
             if (boxMouseEnd == boxMouseStart)
             {
-                hits[0] = UsefullFunctions.MouseCast();
+                hits[0] = UF.MouseCast();
             }
             else
             {
@@ -120,14 +120,14 @@ public class UnitControll : MonoBehaviour
                     Task task = new Task(GM.tasks[TaskTypes.idle], null);
                     List<Vector2Int> path = new List<Vector2Int>();
 
-                    Vector2Int mousePos = UsefullFunctions.GetMousePosCoordinated();
-                    RaycastHit2D objectUnderMouse = UsefullFunctions.MouseCast();
-                    Vector2Int unitPos = UsefullFunctions.CoordinatePosition(unit.transform.position);
+                    Vector2Int mousePos = UF.GetMousePosCoordinated();
+                    RaycastHit2D objectUnderMouse = UF.MouseCast();
+                    Vector2Int unitPos = UF.CoordinatePosition(unit.transform.position);
 
                     if (objectUnderMouse.collider != null && objectUnderMouse.collider.tag == "Tree")
                     {
                         GameObject tree = objectUnderMouse.collider.gameObject;
-                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UsefullFunctions.CoordinatePosition(tree.transform.position), new Vector2Int(1, 1));
+                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(tree.transform.position), new Vector2Int(1, 1));
                         task = new Task(GM.tasks[TaskTypes.cutWood], tree);
                     }
                     else

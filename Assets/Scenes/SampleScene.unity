@@ -575,6 +575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbd75b8e02ba9b247a060be7ccd05dc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseState: 0
   chosenUnits: []
   selectingBoxGraphic: {fileID: 471833247}
 --- !u!4 &2028652717
@@ -657,11 +658,6 @@ PrefabInstance:
     - target: {fileID: 5956991742030764331, guid: f82ee9c1c64867f4989fb22a4e2d4960,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2445725920813379124, guid: f82ee9c1c64867f4989fb22a4e2d4960,
-        type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
