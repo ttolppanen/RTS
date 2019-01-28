@@ -22,6 +22,10 @@ public class PreBuilder : MonoBehaviour
 
     private void Update()
     {
+        if (UsefullFunctions.IsOnUI())
+        {
+            return;
+        }
         Vector2Int point = UsefullFunctions.GetMousePosCoordinated();
         transform.position = (Vector2)point;
         if (Map.ins.CanBeBuilt(point, size))
@@ -31,12 +35,18 @@ public class PreBuilder : MonoBehaviour
             {
                 Map.ins.AddBuildingToMap(point, size, buildingToSpawn);
                 UnitControll.ins.mouseState = MouseStates.idle;
+                //Kuluta resourssit?
                 Destroy(gameObject); //Sitten tuhotaan tämä koko hommaaa.
             }
         }
         else
         {
             bwMaterial.SetColor("_Color", cannotBuildColor);
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            UnitControll.ins.mouseState = MouseStates.idle;
+            Destroy(gameObject);
         }
     }
 }
