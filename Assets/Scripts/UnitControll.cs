@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum MouseStates { idle, choosingUnits, building};
+
 public class UnitControll : MonoBehaviour
 {
     public static UnitControll ins;
 
+    public MouseStates mouseState = MouseStates.idle;
     public List<GameObject> chosenUnits = new List<GameObject>(); //Valitut ukot...
     Vector2 boxMouseStart;
     Vector2 boxMouseEnd;
@@ -34,9 +37,21 @@ public class UnitControll : MonoBehaviour
 
     void Update()
     {
+        if (!(mouseState == MouseStates.idle || mouseState == MouseStates.choosingUnits))//kun tehään jotain muuta niin pietetään valitut listat tyhjänä ja ei sallita nuita napin painalluksia
+        {
+            chosenUnits.Clear();
+            return;
+        }
+
+        if (UsefullFunctions.IsOnUI())
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             boxMouseStart = UsefullFunctions.GetMousePos();
+            mouseState = MouseStates.choosingUnits;
         }
         else if (Input.GetMouseButton(0))
         {

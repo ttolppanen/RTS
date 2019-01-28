@@ -9,7 +9,7 @@ public class Resources : MonoBehaviour
     public Text woodText;
     public IDictionary<ResourceTypes, List<GameObject>> storagePoints = new Dictionary<ResourceTypes, List<GameObject>>()
     {
-        { ResourceTypes.wood, new List<GameObject>()},
+        { ResourceTypes.wood, new List<GameObject>() },
         { ResourceTypes.stone, new List<GameObject>()},
     };
 
@@ -18,6 +18,18 @@ public class Resources : MonoBehaviour
         { ResourceTypes.wood, 0},
         { ResourceTypes.stone, 0},
     };
+
+    private void Awake()
+    {
+        if (ins == null)
+        {
+            ins = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
 
     public void AddResource(int amount, ResourceTypes type)
     {

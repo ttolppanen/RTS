@@ -14,6 +14,7 @@ public class Map : MonoBehaviour
     public int[,] mapData;
     public Sprite[] landTextures;
     public GameObject[] resources;
+    public GameObject[] buildings;
     bool isGenerating = false;
 
     //KORJATTAVIA JUTTUA*** ?
@@ -558,7 +559,7 @@ public class Map : MonoBehaviour
             for (int ix = 0; ix < size.x; ix++)
             {
                 Vector2Int testPoint = point + new Vector2Int(ix, iy);
-                if (!IsInsideMap(testPoint) || !GM.allowedLand.Contains((LandTypes)mapData[testPoint.x, testPoint.y]))
+                if (!(IsInsideMap(testPoint) && GM.allowedLand.Contains((LandTypes)mapData[testPoint.x, testPoint.y])))
                 {
                     return false;
                 }
@@ -567,7 +568,7 @@ public class Map : MonoBehaviour
         return true;
     }
 
-    public void AddBuildingToMap(Vector2Int point, Vector2Int size)
+    public void AddBuildingToMap(Vector2Int point, Vector2Int size, GameObject building)
     {
         for (int iy = 0; iy < size.y; iy++)
         {
@@ -577,6 +578,7 @@ public class Map : MonoBehaviour
                 mapData[testPoint.x, testPoint.y] = (int)LandTypes.building;
             }
         }
+        Instantiate(buildings[0], new Vector3(point.x, point.y, 0), Quaternion.identity);
     }
 
     public Vector2Int FindClosestLand(Vector2Int start, LandTypes type, int maxNodesChecked, List<Vector2Int> alreadyChecked)//alreadyChecked esim. jos satutaan valitsemaan sellainen puu joka on juuri kuollut. niiin lisätään se piste jo katsottuun listaan niin saadaan uusi puuuu

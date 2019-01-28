@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UsefullFunctions
 {
@@ -36,5 +37,10 @@ public class UsefullFunctions
     public static Vector2Int CoordinatePosition(Vector3 pos)
     {
         return new Vector2Int((int)pos.x, (int)pos.y);
+    }
+
+    public static bool IsOnUI()
+    {
+        return EventSystem.current.IsPointerOverGameObject();
     }
 }

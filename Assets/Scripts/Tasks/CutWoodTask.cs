@@ -99,14 +99,18 @@ public class CutWoodTask : MonoBehaviour
     
     void BringBackWood()
     {
-        GameObject storagePoint = Resources.ins.storagePoints[ResourceTypes.wood][0];
-        if (storagePoint != null)
+        if (Resources.ins.storagePoints[ResourceTypes.wood].Count != 0)
         {
+            GameObject storagePoint = Resources.ins.storagePoints[ResourceTypes.wood][0];
             Vector2Int buildingSize = storagePoint.GetComponent<BuildingStatus>().size;
             Vector2Int buildingPoint = UsefullFunctions.CoordinatePosition(storagePoint.transform.position);
             List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UsefullFunctions.CoordinatePosition(transform.position), buildingPoint, buildingPoint, buildingSize);
             Task task = new Task(GM.tasks[TaskTypes.bringBackWood], storagePoint);
             movScript.Move(path, task);
+        }
+        else
+        {
+            movScript.Stop();
         }
     }
 }

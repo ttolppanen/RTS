@@ -10,7 +10,7 @@ public class GM : MonoBehaviour
     {
         { TaskTypes.idle, "idle"},
         { TaskTypes.cutWood, "CutWoodTask" },
-        { TaskTypes.bringBackWood, "ReturnWood" }
+        { TaskTypes.bringBackWood, "ReturnWoodTask" }
     };
     public static List<LandTypes> allowedLand = new List<LandTypes> { LandTypes.grass, LandTypes.sand};
 }
