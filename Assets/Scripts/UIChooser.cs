@@ -41,7 +41,7 @@ public class UIChooser : MonoBehaviour
 
     public void stopUnits()
     {
-        List<GameObject> units = MouseControl.ins.giveChosenUnits();
+        List<GameObject> units = UnitControll.ins.giveChosenUnits();
         print("Click");
 
         foreach(GameObject unit in units)

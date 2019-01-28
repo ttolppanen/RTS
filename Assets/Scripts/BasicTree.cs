@@ -14,7 +14,7 @@ public class BasicTree : MonoBehaviour
         {
             Destroy(gameObject);
             isDead = true;
-            Vector2Int treePos = UF.CoordinatePosition(transform.position);
+            Vector2Int treePos = UsefullFunctions.CoordinatePosition(transform.position);
             Map.ins.mapData[treePos.x, treePos.y] = (int)LandTypes.grass;
             return wood + amount;
         }

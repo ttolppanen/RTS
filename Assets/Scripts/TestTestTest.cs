@@ -12,7 +12,7 @@ public class TestTestTest : MonoBehaviour
     {
         if (Input.GetKeyDown("s"))
         {
-            Vector2 pos = UF.GetMousePosCoordinated();
+            Vector2 pos = UsefullFunctions.GetMousePosCoordinated();
             GameObject ins = Instantiate(preBuilder, pos, Quaternion.identity);
             PreBuilder script = ins.GetComponent<PreBuilder>();
             script.buildingToSpawn = BuildingToInstantiate;
