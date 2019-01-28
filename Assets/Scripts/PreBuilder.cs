@@ -27,6 +27,11 @@ public class PreBuilder : MonoBehaviour
         if (Map.ins.CanBeBuilt(point, size))
         {
             bwMaterial.SetColor("_Color", canBuildColor);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Map.ins.AddBuildingToMap(point, size, buildingToSpawn);
+                Destroy(gameObject); //Sitten tuhotaan tämä koko hommaaa.
+            }
         }
         else
         {

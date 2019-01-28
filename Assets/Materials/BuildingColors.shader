@@ -61,7 +61,7 @@
 		{
 			fixed4 col = tex2D(_MainTex, i.uv);
 			float average = (col.r + col.g + col.b) / 3.0;
-			col = float4(average * _Color.r, average * _Color.g, average * _Color.b, _Alpha);
+			col = float4(average * _Color.r, average * _Color.g, average * _Color.b, col.a * _Alpha);
 			return col;
 		}
 			ENDCG
