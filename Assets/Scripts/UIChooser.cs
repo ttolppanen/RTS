@@ -23,10 +23,15 @@ public class UIChooser : MonoBehaviour
 
     public void activateUI(UITypes type)
     {
+        deActivateAll();
         switch(type)
         {
             case UITypes.Worker:
                 UIs[0].SetActive(true);
+            break;
+
+            case UITypes.Building:
+                UIs[1].SetActive(true);
             break;
         }
     }

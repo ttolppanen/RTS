@@ -85,7 +85,6 @@ public class UnitControll : MonoBehaviour
 
             selectingBoxGraphic.SetActive(false);
             chosenUnits.Clear();
-            UIChooser.ins.deActivateAll();
 
             foreach (RaycastHit2D hit in hits)
             {
