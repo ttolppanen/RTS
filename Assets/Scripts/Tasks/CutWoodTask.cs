@@ -101,11 +101,11 @@ public class CutWoodTask : MonoBehaviour
     {
         if (Resources.ins.storagePoints[ResourceTypes.wood].Count != 0)
         {
-            GameObject storagePoint = Resources.ins.storagePoints[ResourceTypes.wood][0];
-            Vector2Int buildingSize = storagePoint.GetComponent<BuildingStatus>().size;
-            Vector2Int buildingPoint = UF.CoordinatePosition(storagePoint.transform.position);
+            GameObject closestWoodPile = Resources.ins.ClosestStoragePoint(transform.position, ResourceTypes.wood);
+            Vector2Int buildingSize = closestWoodPile.GetComponent<BuildingStatus>().size;
+            Vector2Int buildingPoint = UF.CoordinatePosition(closestWoodPile.transform.position);
             List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), buildingPoint, buildingPoint, buildingSize);
-            Task task = new Task(GM.tasks[TaskTypes.bringBackWood], storagePoint);
+            Task task = new Task(GM.tasks[TaskTypes.bringBackWood], closestWoodPile);
             movScript.Move(path, task);
         }
         else

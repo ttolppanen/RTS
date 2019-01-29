@@ -67,4 +67,27 @@ public class Resources : MonoBehaviour
         woodText.text = resources[ResourceTypes.wood] + "";
         stoneText.text = resources[ResourceTypes.stone] + "";
     }
+
+    public GameObject ClosestStoragePoint(Vector2 point, ResourceTypes type)
+    {
+        if (storagePoints[type].Count == 0)
+        {
+            return null;
+        }
+        else
+        {
+            float distance = 999999;
+            GameObject closestStoragePoint = storagePoints[type][0];
+            foreach (GameObject storagePoint in storagePoints[type])
+            {
+                float currentDistance = ((Vector2)storagePoint.transform.position - point).magnitude;
+                if (currentDistance < distance)
+                {
+                    distance = currentDistance;
+                    closestStoragePoint = storagePoint;
+                }
+            }
+            return closestStoragePoint;
+        }
+    }
 }
