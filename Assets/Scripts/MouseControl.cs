@@ -132,7 +132,7 @@ public class MouseControl : MonoBehaviour
                     {
                         GameObject tree = objectUnderMouse.collider.gameObject;
                         path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(tree.transform.position), new Vector2Int(1, 1));
-                        task = new Task(GM.tasks[TaskTypes.cutWood], tree);
+                        task = new ResourceCollectionTask(GM.tasks[TaskTypes.cutWood], new List<GameObject> { tree }, ResourceTypes.wood);
                     }
                     else
                     {

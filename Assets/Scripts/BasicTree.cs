@@ -7,7 +7,7 @@ public class BasicTree : MonoBehaviour
     public int wood;
     public bool isDead = false;
 
-    public int CutWood(int amount) //Int[] missä eka numera on kuinka paljon puuta hakattiin, toinen numero 1 jos puu kuoli
+    public int CutWood(int amount)
     {
         wood -= amount;
         if (wood <= 0)

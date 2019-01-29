@@ -5,13 +5,13 @@ using UnityEngine;
 public class Task
 {
     public string taskName;
-    public GameObject objective; //Peli objeckti mille taski tehdään, esim. puu?
+    public List<GameObject> objectives; //Peli objeckti mille taski tehdään, esim. puu?
     public MonoBehaviour taskScriptInstance; //Sitten kun taski on luotu niin pietetään tässä tallessa se scripti.
 
-    public Task(string taskName, GameObject objective)
+    public Task(string taskName, List<GameObject> objectives)
     {
         this.taskName = taskName;
-        this.objective = objective;
+        this.objectives = objectives;
         taskScriptInstance = null;
     }
 }

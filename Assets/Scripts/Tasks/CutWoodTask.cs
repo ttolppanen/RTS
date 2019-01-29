@@ -16,7 +16,7 @@ public class CutWoodTask : MonoBehaviour
     {
         resources = GetComponent<UnitResources>();
         movScript = GetComponent<UnitMovement>();
-        tree = movScript.currentTask.objective;
+        tree = movScript.currentTask.objectives[0];
         if (tree == null)//Jos on käynyt tosi huono tuuri ja juuri viimeframen aikana puu on tuhoutunut? Vaikka liikkumisen aikana tai jtn emt.
         {
             Reset();
@@ -60,28 +60,28 @@ public class CutWoodTask : MonoBehaviour
         }
     }
 
-    GameObject FindANewTree(List<Vector2Int> alreadyChecked)
+    public static GameObject FindANewTree(List<Vector2Int> alreadyChecked, Vector2Int position)
     {
-        Vector2Int newTreeLocation = Map.ins.FindClosestLand(UF.CoordinatePosition(transform.position), LandTypes.tree, 200, alreadyChecked);
+        Vector2Int newTreeLocation = Map.ins.FindClosestLand(position, LandTypes.tree, 200, alreadyChecked);
         if (newTreeLocation == new Vector2Int(-999, -999))
         {
             return null;
         }
-        tree = UF.FetchGameObject(newTreeLocation + new Vector2(0.5f, 0.5f)); //0.5 että menee keskelle ruutua/nodea.
-        if (tree.GetComponent<BasicTree>().isDead)
+        GameObject newTree = UF.FetchGameObject(newTreeLocation + new Vector2(0.5f, 0.5f)); //0.5 että menee keskelle ruutua/nodea.
+        if (newTree.GetComponent<BasicTree>().isDead)
         {
             alreadyChecked.Add(newTreeLocation);
-            return FindANewTree(alreadyChecked);
+            return FindANewTree(alreadyChecked, position);
         }
         else
         {
-            return tree;
+            return newTree;
         }
     }
 
     void Reset()
     {
-        GameObject tree = FindANewTree(new List<Vector2Int>());
+        GameObject tree = FindANewTree(new List<Vector2Int>(), UF.CoordinatePosition(transform.position));
         if (tree == null)
         {
             Destroy(this);
@@ -89,7 +89,7 @@ public class CutWoodTask : MonoBehaviour
         }
         Vector2Int newTreeLocation = UF.CoordinatePosition(tree.transform.position);
         List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), newTreeLocation, newTreeLocation, new Vector2Int(1, 1));
-        Task task = new Task(GM.tasks[TaskTypes.cutWood], tree);
+        Task task = new ResourceCollectionTask(GM.tasks[TaskTypes.cutWood], new List<GameObject> { tree }, ResourceTypes.wood);
         if (!(path.Count != 0 && path[0] == new Vector2Int(-999, -999)))
         {
             movScript.Move(path, task);
@@ -105,7 +105,9 @@ public class CutWoodTask : MonoBehaviour
             Vector2Int buildingSize = closestWoodPile.GetComponent<BuildingStatus>().size;
             Vector2Int buildingPoint = UF.CoordinatePosition(closestWoodPile.transform.position);
             List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), buildingPoint, buildingPoint, buildingSize);
-            Task task = new Task(GM.tasks[TaskTypes.bringBackWood], closestWoodPile);
+            List<GameObject> objectives = new List<GameObject> { closestWoodPile };
+            objectives.Add(tree);
+            Task task = new Task(GM.tasks[TaskTypes.bringBackWood], objectives);
             movScript.Move(path, task);
         }
         else
