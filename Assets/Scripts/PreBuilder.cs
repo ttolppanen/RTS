@@ -22,11 +22,11 @@ public class PreBuilder : MonoBehaviour
 
     private void Update()
     {
-        if (UsefullFunctions.IsOnUI())
+        if (UF.IsOnUI())
         {
             return;
         }
-        Vector2Int point = UsefullFunctions.GetMousePosCoordinated();
+        Vector2Int point = UF.GetMousePosCoordinated();
         transform.position = (Vector2)point;
         if (Map.ins.CanBeBuilt(point, size))
         {
@@ -34,7 +34,7 @@ public class PreBuilder : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 Map.ins.AddBuildingToMap(point, size, buildingToSpawn);
-                UnitControll.ins.mouseState = MouseStates.idle;
+                MouseControl.ins.mouseState = MouseStates.idle;
                 //Kuluta resourssit?
                 Destroy(gameObject); //Sitten tuhotaan tämä koko hommaaa.
             }
@@ -45,7 +45,7 @@ public class PreBuilder : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(1))
         {
-            UnitControll.ins.mouseState = MouseStates.idle;
+            MouseControl.ins.mouseState = MouseStates.idle;
             Destroy(gameObject);
         }
     }

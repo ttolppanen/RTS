@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UsefullFunctions
+public class UF
 {
     public static Vector2 GetMousePos()
     {
