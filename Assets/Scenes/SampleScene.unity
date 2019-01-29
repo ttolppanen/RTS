@@ -461,6 +461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1397273700}
   - component: {fileID: 1397273699}
+  - component: {fileID: 1397273701}
   m_Layer: 0
   m_Name: Resources
   m_TagString: Untagged
@@ -480,7 +481,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29166670ceb8e1e4d9442b4bc4e54c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  woodText: {fileID: 0}
 --- !u!4 &1397273700
 Transform:
   m_ObjectHideFlags: 0
@@ -495,6 +495,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1397273701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397273698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a4e9fbd9a9cad41a8a8f6a0978cd8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuildingToInstantiate: {fileID: 5504415551876432920, guid: 644a6679ddecf5d4fb699ed0c91cc9ef,
+    type: 3}
+  preBuilder: {fileID: 838337717329439907, guid: 276713984e2eed4468b6666ef55e85db,
+    type: 3}
 --- !u!1001 &1746130993
 PrefabInstance:
   m_ObjectHideFlags: 0

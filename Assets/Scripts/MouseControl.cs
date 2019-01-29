@@ -94,21 +94,24 @@ public class MouseControl : MonoBehaviour
                     chosenUnits.Add(hit.transform.gameObject);
                 }
             }
-            int highestHierachy = -1;
-            GameObject showThisUnitsUI = chosenUnits[0];
-            foreach (GameObject unit in chosenUnits)
+
+            if (chosenUnits.Count != 0)
             {
-                if (highestHierachy < unit.GetComponent<Buttons>().hierachy)
+                int highestHierachy = -1;
+                GameObject showThisUnitsUI = chosenUnits[0];
+                foreach (GameObject unit in chosenUnits)
                 {
-                    showThisUnitsUI = unit;
-                    highestHierachy = unit.GetComponent<Buttons>().hierachy;
+                    if (highestHierachy < unit.GetComponent<Buttons>().hierachy)
+                    {
+                        showThisUnitsUI = unit;
+                        highestHierachy = unit.GetComponent<Buttons>().hierachy;
+                    }
                 }
+
+                Buttons buttons = showThisUnitsUI.GetComponent<Buttons>();
+
+                UIChooser.ins.activateUI(buttons.UI);
             }
-
-            Buttons buttons = showThisUnitsUI.GetComponent<Buttons>();
-
-            UIChooser.ins.activateUI(buttons.UI);
-
 
             mouseState = MouseStates.idle;
         }

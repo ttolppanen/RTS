@@ -12,6 +12,7 @@ public class TestTestTest : MonoBehaviour
     {
         if (Input.GetKeyDown("s"))
         {
+            MouseControl.ins.mouseState = MouseStates.building;
             Vector2 pos = UF.GetMousePosCoordinated();
             GameObject ins = Instantiate(preBuilder, pos, Quaternion.identity);
             PreBuilder script = ins.GetComponent<PreBuilder>();
