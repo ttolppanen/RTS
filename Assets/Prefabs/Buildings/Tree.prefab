@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 341173737836794020}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Tree
+  m_TagString: Resource
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,7 +94,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e34b057f4b48bea478b47f968c13e8b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wood: 100
+  resourceAmount: 100
+  type: 0
   isDead: 0
 --- !u!58 &7401396393624033892
 CircleCollider2D:

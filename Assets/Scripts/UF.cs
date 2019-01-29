@@ -43,4 +43,16 @@ public class UF
     {
         return EventSystem.current.IsPointerOverGameObject();
     }
+
+    public static LandTypes ResourceTypeToLandType(ResourceTypes type)//PITÄÄ LAITTAA KIVI TÄNNE
+    {
+        if (type == ResourceTypes.stone)
+        {
+            return LandTypes.tree;
+        }
+        else
+        {
+            return LandTypes.tree;
+        }
+    }
 }

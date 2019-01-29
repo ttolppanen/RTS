@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceCollectionTask : Task
+public class ResourceCollection : Task
 {
     public ResourceTypes collectingType;
 
-    public ResourceCollectionTask(string taskName, List<GameObject> objectives, ResourceTypes collectingType) : base(taskName, objectives)
+    public ResourceCollection(string taskName, List<GameObject> objectives, ResourceTypes collectingType) : base(taskName, objectives)
     {
         base.taskName = taskName;
         base.objectives = objectives;
