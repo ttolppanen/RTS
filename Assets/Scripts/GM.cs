@@ -15,6 +15,6 @@ public class GM : MonoBehaviour
     public static List<LandTypes> allowedLand = new List<LandTypes> { LandTypes.grass, LandTypes.sand};
 }
 
-public enum LandTypes { sea, grass, tree, sand, building, lastNumber };
+public enum LandTypes { sea, grass, tree, sand, building, stone, lastNumber };
 public enum TaskTypes { idle, collectResource, bringBackResource};
 public enum ResourceTypes { wood, stone};

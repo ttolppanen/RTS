@@ -217,7 +217,7 @@ PrefabInstance:
     - target: {fileID: 836413331906385000, guid: 1003a95368a2b604d97ce8d5b908002d,
         type: 3}
       propertyPath: maxResourceAmount
-      value: 100
+      value: 150
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1003a95368a2b604d97ce8d5b908002d, type: 3}
@@ -428,15 +428,17 @@ MonoBehaviour:
   size: {x: 200, y: 200}
   numberOfLand: 10000
   numberOfForests: 20
+  numberOfStones: 50
   landTextures:
   - {fileID: 21300000, guid: cc8d4425cee354b489f22c2e4c141ff4, type: 3}
   - {fileID: 21300000, guid: 2f97a8ea86cd08f4a996f7fe273fb383, type: 3}
-  - {fileID: 21300000, guid: 133c656201755fb469df99beb1b9be8a, type: 3}
   - {fileID: 21300000, guid: 549b558b4dc0cbb47a2d6e1282576f18, type: 3}
   resources:
   - {fileID: 3030354322363289397, guid: a5f6fa7902f7c0141991525cedbeff05, type: 3}
+  - {fileID: 3030354322363289397, guid: 0c768ca5b71f79d4d85b1436995b48b7, type: 3}
   buildings:
   - {fileID: 5504415551876432920, guid: 644a6679ddecf5d4fb699ed0c91cc9ef, type: 3}
+  - {fileID: 5504415551876432920, guid: d3dcc5a69a245f044a3c9d28579f691f, type: 3}
 --- !u!4 &1270202215
 Transform:
   m_ObjectHideFlags: 0
@@ -461,7 +463,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1397273700}
   - component: {fileID: 1397273699}
-  - component: {fileID: 1397273701}
   m_Layer: 0
   m_Name: Resources
   m_TagString: Untagged
@@ -495,22 +496,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1397273701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1397273698}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8a4e9fbd9a9cad41a8a8f6a0978cd8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BuildingToInstantiate: {fileID: 5504415551876432920, guid: 644a6679ddecf5d4fb699ed0c91cc9ef,
-    type: 3}
-  preBuilder: {fileID: 838337717329439907, guid: 276713984e2eed4468b6666ef55e85db,
-    type: 3}
 --- !u!1001 &1746130993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -797,6 +782,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingLayer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 836413331906385000, guid: 1003a95368a2b604d97ce8d5b908002d,
+        type: 3}
+      propertyPath: maxResourceAmount
+      value: 150
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1003a95368a2b604d97ce8d5b908002d, type: 3}
