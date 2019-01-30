@@ -16,9 +16,16 @@ public class ReturnResourceTask : MonoBehaviour
         movScript = GetComponent<UnitMovement>();
         resources = GetComponent<UnitResources>();
         resourcePile = movScript.currentTask.objectives[0];
-        previousNode = movScript.currentTask.objectives[1];
-        returningType = ((ResourceCollection)movScript.currentTask).collectingType;
+        if (movScript.currentTask.objectives.Count > 1)
+        {
+            previousNode = movScript.currentTask.objectives[1];
+        }
+        else
+        {
+            previousNode = null;
+        }
         rpScript = resourcePile.GetComponent<ResourcePile>();
+        returningType = rpScript.type;
         if (resources.carryingType == returningType)
         {
             rpScript.StorageResources(resources.GiveResources());
@@ -37,7 +44,7 @@ public class ReturnResourceTask : MonoBehaviour
                 previousNode = newNode;
             }
         }
-        Task newTask = new ResourceCollection(GM.tasks[TaskTypes.collectResource], new List<GameObject> { previousNode }, returningType);
+        Task newTask = new Task(GM.tasks[TaskTypes.collectResource], new List<GameObject> { previousNode });
         Vector2Int nodePoint = UF.CoordinatePosition(previousNode.transform.position);
         Vector2Int nodeSize = previousNode.GetComponent<BuildingStatus>().size;
         List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), nodePoint, nodePoint, nodeSize);

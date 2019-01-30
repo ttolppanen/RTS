@@ -69,15 +69,15 @@ public class CollectResourceTask : MonoBehaviour
         {
             return null;
         }
-        GameObject newTree = UF.FetchGameObject(newNodeLocation + new Vector2(0.5f, 0.5f)); //0.5 että menee keskelle ruutua/nodea.
-        if (newTree.GetComponent<ResourceNode>().isDead)
+        GameObject newNode = UF.FetchGameObject(newNodeLocation + new Vector2(0.5f, 0.5f)); //0.5 että menee keskelle ruutua/nodea.
+        if (newNode.GetComponent<ResourceNode>().isDead)
         {
             alreadyChecked.Add(newNodeLocation);
             return FindANewNode(alreadyChecked, position, type);
         }
         else
         {
-            return newTree;
+            return newNode;
         }
     }
 
@@ -93,7 +93,7 @@ public class CollectResourceTask : MonoBehaviour
         Vector2Int newNodeLocation = UF.CoordinatePosition(newNode.transform.position);
         Vector2Int nodeSize = newNode.GetComponent<BuildingStatus>().size;
         List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), newNodeLocation, newNodeLocation, nodeSize);
-        Task task = new ResourceCollection(GM.tasks[TaskTypes.collectResource], new List<GameObject> { newNode }, resourceType);
+        Task task = new Task(GM.tasks[TaskTypes.collectResource], new List<GameObject> { newNode });
         if (!(path.Count != 0 && path[0] == new Vector2Int(-999, -999)))
         {
             movScript.Move(path, task);
@@ -111,7 +111,7 @@ public class CollectResourceTask : MonoBehaviour
             List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), buildingPoint, buildingPoint, buildingSize);
             List<GameObject> objectives = new List<GameObject> { closestResourcePile };
             objectives.Add(resourceObject);
-            Task task = new ResourceCollection(GM.tasks[TaskTypes.bringBackResource], objectives, resourceType);
+            Task task = new Task(GM.tasks[TaskTypes.bringBackResource], objectives);
             movScript.Move(path, task);
         }
         else
