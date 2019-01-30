@@ -41,12 +41,12 @@ public class MouseControl : MonoBehaviour
             chosenUnits.Clear();
             return;
         }
-
         if (UF.IsOnUI())
         {
             return;
         }
 
+        //Left Click
         if (Input.GetMouseButtonDown(0))
         {
             boxMouseStart = UF.GetMousePos();
@@ -113,6 +113,8 @@ public class MouseControl : MonoBehaviour
 
             mouseState = MouseStates.idle;
         }
+
+        //Right Click
         else if (Input.GetMouseButtonDown(1))
         {
             if (chosenUnits.Count != 0)
@@ -126,13 +128,20 @@ public class MouseControl : MonoBehaviour
                     RaycastHit2D objectUnderMouse = UF.MouseCast();
                     Vector2Int unitPos = UF.CoordinatePosition(unit.transform.position);
 
-                    if (objectUnderMouse.collider != null && objectUnderMouse.collider.tag == "Resource")
+                    if (objectUnderMouse.collider != null && objectUnderMouse.collider.GetComponent<Interactable>() != null) //On painettu objectia ja sille voi tehdä jotain/Siltä löytyy interctable scripti
                     {
-                        GameObject resourceNode = objectUnderMouse.collider.gameObject;
-                        Vector2Int size = resourceNode.GetComponent<BuildingStatus>().size;
-                        ResourceTypes resourceType = resourceNode.GetComponent<ResourceNode>().type;
-                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(resourceNode.transform.position), size);
-                        task = new ResourceCollection(GM.tasks[TaskTypes.collectResource], new List<GameObject> { resourceNode }, resourceType);
+                        GameObject taskObject = objectUnderMouse.collider.gameObject;
+                        TaskTypes taskType = taskObject.GetComponent<Interactable>().taskType;
+                        if (taskObject.GetComponent<BuildingStatus>() != null) //On jonkin kokoinen
+                        {
+                            Vector2Int size = taskObject.GetComponent<BuildingStatus>().size;
+                            path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), size);
+                        }
+                        else
+                        {
+                            path = Map.ins.AStarPathFinding(unitPos, mousePos);
+                        }
+                        task = new Task(GM.tasks[taskType], new List<GameObject> { taskObject });
                     }
                     else
                     {
