@@ -46,7 +46,7 @@ PrefabInstance:
     - target: {fileID: 1697602558657637564, guid: 5372fc73f66542648b66dec14964f22b,
         type: 3}
       propertyPath: m_Name
-      value: Button
+      value: Stop
       objectReference: {fileID: 0}
     - target: {fileID: 1119833777705752145, guid: 5372fc73f66542648b66dec14964f22b,
         type: 3}
@@ -152,6 +152,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.8570749
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658177923006202841, guid: 5372fc73f66542648b66dec14964f22b,
+        type: 3}
+      propertyPath: m_Text
+      value: 'S
+
+'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5372fc73f66542648b66dec14964f22b, type: 3}
