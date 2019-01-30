@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class Builder : MonoBehaviour
 {
-    public enum BuildingTypes{WoodsPile};
+    public enum BuildingTypes{WoodsPile,StonesPile};
     public GameObject preBuilder;
     public List<GameObject> buildings;
     public void makeBuilding(BuildingTypes building)
     {
-        switch(building)
+        GameObject o = Instantiate(preBuilder);
+        switch (building)
         {
             case BuildingTypes.WoodsPile:
-                GameObject o = Instantiate(preBuilder);
                 o.GetComponent<PreBuilder>().buildingToSpawn = buildings[0];
+            break;
+
+            case BuildingTypes.StonesPile:
+                o.GetComponent<PreBuilder>().buildingToSpawn = buildings[1];
             break;
         }
 
@@ -23,4 +27,10 @@ public class Builder : MonoBehaviour
     {
         makeBuilding(BuildingTypes.WoodsPile);
     }
+
+    public void buildStonePile()
+    {
+        makeBuilding(BuildingTypes.StonesPile);
+    }
+
 }

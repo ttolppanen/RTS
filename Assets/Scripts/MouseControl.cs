@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum MouseStates { idle, choosingUnits, building};
+public enum MouseStates { idle, choosingUnits, building };
 
 public class MouseControl : MonoBehaviour
 {
@@ -19,7 +19,6 @@ public class MouseControl : MonoBehaviour
     {
         return chosenUnits;
     }
-
 
     private void Awake()
     {
@@ -93,21 +92,24 @@ public class MouseControl : MonoBehaviour
                     chosenUnits.Add(hit.transform.gameObject);
                 }
             }
-            int highestHierachy = -1;
-            GameObject showThisUnitsUI = chosenUnits[0];
-            foreach (GameObject unit in chosenUnits)
+
+            if (chosenUnits.Count != 0)
             {
-                if (highestHierachy < unit.GetComponent<Buttons>().hierachy)
+                int highestHierachy = -1;
+                GameObject showThisUnitsUI = chosenUnits[0];
+                foreach (GameObject unit in chosenUnits)
                 {
-                    showThisUnitsUI = unit;
-                    highestHierachy = unit.GetComponent<Buttons>().hierachy;
+                    if (highestHierachy < unit.GetComponent<Buttons>().hierachy)
+                    {
+                        showThisUnitsUI = unit;
+                        highestHierachy = unit.GetComponent<Buttons>().hierachy;
+                    }
                 }
+
+                Buttons buttons = showThisUnitsUI.GetComponent<Buttons>();
+
+                UIChooser.ins.activateUI(buttons.UI);
             }
-
-            Buttons buttons = showThisUnitsUI.GetComponent<Buttons>();
-
-            UIChooser.ins.activateUI(buttons.UI);
-
 
             mouseState = MouseStates.idle;
         }
@@ -124,11 +126,13 @@ public class MouseControl : MonoBehaviour
                     RaycastHit2D objectUnderMouse = UF.MouseCast();
                     Vector2Int unitPos = UF.CoordinatePosition(unit.transform.position);
 
-                    if (objectUnderMouse.collider != null && objectUnderMouse.collider.tag == "Tree")
+                    if (objectUnderMouse.collider != null && objectUnderMouse.collider.tag == "Resource")
                     {
-                        GameObject tree = objectUnderMouse.collider.gameObject;
-                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(tree.transform.position), new Vector2Int(1, 1));
-                        task = new Task(GM.tasks[TaskTypes.cutWood], tree);
+                        GameObject resourceNode = objectUnderMouse.collider.gameObject;
+                        Vector2Int size = resourceNode.GetComponent<BuildingStatus>().size;
+                        ResourceTypes resourceType = resourceNode.GetComponent<ResourceNode>().type;
+                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(resourceNode.transform.position), size);
+                        task = new ResourceCollection(GM.tasks[TaskTypes.collectResource], new List<GameObject> { resourceNode }, resourceType);
                     }
                     else
                     {

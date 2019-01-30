@@ -43,4 +43,16 @@ public class UF
     {
         return EventSystem.current.IsPointerOverGameObject();
     }
+
+    public static LandTypes ResourceTypeToLandType(ResourceTypes type)
+    {
+        if (type == ResourceTypes.stone)
+        {
+            return LandTypes.stone;
+        }
+        else
+        {
+            return LandTypes.tree;
+        }
+    }
 }
