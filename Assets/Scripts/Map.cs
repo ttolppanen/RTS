@@ -11,6 +11,7 @@ public class Map : MonoBehaviour
     public Vector2Int size;
     public int numberOfLand;
     public int numberOfForests;
+    public int numberOfStones;
     public int[,] mapData;
     public Sprite[] landTextures;
     public GameObject[] resources;
@@ -88,6 +89,25 @@ public class Map : MonoBehaviour
             edgePoints.Add(startingPoint);
 
             StartCoroutine(CreateNode(Random.Range(100, 500), LandTypes.tree, allowedTypes, edgePoints)); //HARDKOODATTU metsän kooksi 30 - 200
+            while (isGenerating) //isGenerating menee falseksi kun CreateNode on valmis
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            allowedTypes.Clear();
+            edgePoints.Clear();
+        }
+
+        //Generoidaan Kivet
+        for (int i = 0; i < numberOfStones; i++)
+        {
+            isGenerating = true;
+            List<Vector2Int> possibleStonePoints = PossibleCoords((int)LandTypes.grass); //Mahdolliset paikat mihin puita voi laittaa
+            startingPoint = possibleStonePoints[Random.Range(0, possibleStonePoints.Count - 1)]; //Valitaan sieltä jokin
+            allowedTypes.Add((int)LandTypes.grass);
+            allowedTypes.Add((int)LandTypes.sand);
+            edgePoints.Add(startingPoint);
+
+            StartCoroutine(CreateNode(Random.Range(3, 10), LandTypes.stone, allowedTypes, edgePoints)); //HARDKOODATTU metsän kooksi 3 - 10
             while (isGenerating) //isGenerating menee falseksi kun CreateNode on valmis
             {
                 yield return new WaitForEndOfFrame();
@@ -230,13 +250,13 @@ public class Map : MonoBehaviour
             for (int ix = 0; ix < size.x; ix++)
             {
                 Texture2D landTexture;
-                if (mapData[ix, iy] == 0)
+                if (mapData[ix, iy] == (int)LandTypes.sea) //LandTextures[0] = sea, [1] = grass, [2] = sand...
                 {
                     landTexture = landTextures[0].texture;
                 }
                 else if (mapData[ix, iy] == (int)LandTypes.sand)
                 {
-                    landTexture = landTextures[(int)LandTypes.sand].texture;
+                    landTexture = landTextures[2].texture; 
                 }
                 else
                 {
@@ -256,9 +276,15 @@ public class Map : MonoBehaviour
         {
             for (int ix = 0; ix < size.x; ix++)
             {
-                if (mapData[ix, iy] == (int)LandTypes.tree)
+                switch (mapData[ix, iy])
                 {
-                    Instantiate(resources[0], new Vector3(ix + Random.Range(0, 0.3f), iy + Random.Range(0, 0.3f), 0), Quaternion.identity).transform.parent = transform; //Luodaan ja laitetaan samalla mapin lapseksi niin ei näytä niin täydeltä editorissa... Hox että esineiden koordinaatti on vasemmassa alareunassa.
+                    case (int)LandTypes.tree:
+                        Instantiate(resources[0], new Vector3(ix + Random.Range(0, 0.1f), iy + Random.Range(0, 0.1f), 0), Quaternion.identity).transform.parent = transform;
+                        break;
+
+                    case (int)LandTypes.stone:
+                        Instantiate(resources[1], new Vector3(ix + Random.Range(0, 0.05f), iy + Random.Range(0, 0.05f), 0), Quaternion.identity).transform.parent = transform;
+                        break;
                 }
             }
         }
@@ -578,7 +604,7 @@ public class Map : MonoBehaviour
                 mapData[testPoint.x, testPoint.y] = (int)LandTypes.building;
             }
         }
-        Instantiate(buildings[0], new Vector3(point.x, point.y, 0), Quaternion.identity);
+        Instantiate(building, new Vector3(point.x, point.y, 0), Quaternion.identity);
     }
 
     public Vector2Int FindClosestLand(Vector2Int start, LandTypes type, int maxNodesChecked, List<Vector2Int> alreadyChecked)//alreadyChecked esim. jos satutaan valitsemaan sellainen puu joka on juuri kuollut. niiin lisätään se piste jo katsottuun listaan niin saadaan uusi puuuu

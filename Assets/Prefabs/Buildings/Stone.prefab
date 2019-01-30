@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7401396393624033892}
   - component: {fileID: 341173737836794020}
   m_Layer: 0
-  m_Name: Tree
+  m_Name: Stone
   m_TagString: Resource
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 133c656201755fb469df99beb1b9be8a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d296d1605f338fc4b85e4ae4795004b5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourceAmount: 100
-  type: 0
+  type: 1
   isDead: 0
 --- !u!58 &7401396393624033892
 CircleCollider2D:

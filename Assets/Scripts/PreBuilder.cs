@@ -6,6 +6,7 @@ public class PreBuilder : MonoBehaviour
 {
     public GameObject buildingToSpawn;
     Vector2Int size;
+    int[] resourceCost;
     SpriteRenderer sr;
     Material bwMaterial; //BlackAndWhite material
     Color canBuildColor = new Color(1, 1.5f, 1);
@@ -17,7 +18,9 @@ public class PreBuilder : MonoBehaviour
         bwMaterial = sr.material;
         Sprite buildingSprite = buildingToSpawn.GetComponent<SpriteRenderer>().sprite;
         sr.sprite = buildingSprite;
-        size = buildingToSpawn.GetComponent<BuildingStatus>().size;
+        BuildingStatus bs = buildingToSpawn.GetComponent<BuildingStatus>();
+        size = bs.size;
+        resourceCost = bs.resourceCosts;
     }
 
     private void Update()
@@ -28,14 +31,14 @@ public class PreBuilder : MonoBehaviour
         }
         Vector2Int point = UF.GetMousePosCoordinated();
         transform.position = (Vector2)point;
-        if (Map.ins.CanBeBuilt(point, size))
+        if (Map.ins.CanBeBuilt(point, size) && Resources.ins.IsEnoughResources(resourceCost))
         {
             bwMaterial.SetColor("_Color", canBuildColor);
             if (Input.GetMouseButtonDown(0))
             {
                 Map.ins.AddBuildingToMap(point, size, buildingToSpawn);
                 MouseControl.ins.mouseState = MouseStates.idle;
-                //Kuluta resourssit?
+                Resources.ins.RemoveResources(resourceCost);
                 Destroy(gameObject); //Sitten tuhotaan tämä koko hommaaa.
             }
         }
