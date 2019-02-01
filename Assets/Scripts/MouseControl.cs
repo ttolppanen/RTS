@@ -20,6 +20,28 @@ public class MouseControl : MonoBehaviour
         return chosenUnits;
     }
 
+    public void chooseUI()
+    {
+        if (chosenUnits.Count != 0)
+        {
+            int highestHierachy = -1;
+            GameObject showThisUnitsUI = chosenUnits[0];
+            foreach (GameObject unit in chosenUnits)
+            {
+                if (highestHierachy < unit.GetComponent<Buttons>().hierachy)
+                {
+                    showThisUnitsUI = unit;
+                    highestHierachy = unit.GetComponent<Buttons>().hierachy;
+                }
+            }
+
+            Buttons buttons = showThisUnitsUI.GetComponent<Buttons>();
+
+            UIChooser.ins.activateUI(buttons.UI);
+        }
+
+    }
+
     private void Awake()
     {
         {
@@ -93,23 +115,7 @@ public class MouseControl : MonoBehaviour
                 }
             }
 
-            if (chosenUnits.Count != 0)
-            {
-                int highestHierachy = -1;
-                GameObject showThisUnitsUI = chosenUnits[0];
-                foreach (GameObject unit in chosenUnits)
-                {
-                    if (highestHierachy < unit.GetComponent<Buttons>().hierachy)
-                    {
-                        showThisUnitsUI = unit;
-                        highestHierachy = unit.GetComponent<Buttons>().hierachy;
-                    }
-                }
-
-                Buttons buttons = showThisUnitsUI.GetComponent<Buttons>();
-
-                UIChooser.ins.activateUI(buttons.UI);
-            }
+            chooseUI();
 
             mouseState = MouseStates.idle;
         }

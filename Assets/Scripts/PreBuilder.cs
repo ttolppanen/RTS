@@ -38,6 +38,7 @@ public class PreBuilder : MonoBehaviour
             {
                 Map.ins.AddBuildingToMap(point, size, buildingToSpawn);
                 MouseControl.ins.mouseState = MouseStates.idle;
+                MouseControl.ins.chooseUI();
                 Resources.ins.RemoveResources(resourceCost);
                 Destroy(gameObject); //Sitten tuhotaan tämä koko hommaaa.
             }
