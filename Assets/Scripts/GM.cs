@@ -17,4 +17,4 @@ public class GM : MonoBehaviour
 
 public enum LandTypes { sea, grass, tree, sand, building, stone, lastNumber };
 public enum TaskTypes { idle, collectResource, bringBackResource};
-public enum ResourceTypes { wood, stone};
+public enum ResourceTypes { wood, stone, soul};
