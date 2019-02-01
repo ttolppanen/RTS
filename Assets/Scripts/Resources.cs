@@ -15,9 +15,11 @@ public class Resources : MonoBehaviour
     {
         { ResourceTypes.wood, 100},
         { ResourceTypes.stone, 0},
+        { ResourceTypes.soul, 10},
     };
     Text woodText;
     Text stoneText;
+    Text soulText;
 
 
     private void Awake()
@@ -32,6 +34,7 @@ public class Resources : MonoBehaviour
         }
         woodText = GameObject.Find("WoodText").GetComponent<Text>();
         stoneText = GameObject.Find("StoneText").GetComponent<Text>();
+        soulText = GameObject.Find("SoulText").GetComponent<Text>();
         UpdateTexts();
     }
 
@@ -66,6 +69,7 @@ public class Resources : MonoBehaviour
     {
         woodText.text = resources[ResourceTypes.wood] + "";
         stoneText.text = resources[ResourceTypes.stone] + "";
+        soulText.text = resources[ResourceTypes.soul] + "";
     }
 
     public GameObject ClosestStoragePoint(Vector2 point, ResourceTypes type)
