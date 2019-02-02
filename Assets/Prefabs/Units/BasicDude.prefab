@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6739369405496992391}
   - component: {fileID: 6739369405496992390}
   - component: {fileID: 2041694559144902776}
+  - component: {fileID: 1338584563141642898}
   - component: {fileID: 836413331906385000}
   m_Layer: 8
   m_Name: BasicDude
@@ -151,6 +152,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UI: 0
   hierachy: 1
+  unitButtons: []
+--- !u!114 &1338584563141642898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6739369405496992387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d43ff47055ee6c241bea985ea17bb088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitType: 1
+  currentState: 0
+  maxHealth: 5
+  currentHealth: 5
+  isAlive: 1
 --- !u!114 &836413331906385000
 MonoBehaviour:
   m_ObjectHideFlags: 0

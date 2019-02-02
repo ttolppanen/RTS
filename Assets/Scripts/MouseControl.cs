@@ -38,10 +38,13 @@ public class MouseControl : MonoBehaviour
             UITypes UIType = showThisUnitsUI.GetComponent<Buttons>().giveUI();
             List<GameObject> freeSlot = showThisUnitsUI.GetComponent<Buttons>().giveButtons();
 
-
-            UIChooser.ins.activateUI(UIType,freeSlot);
+            UIChooser.ins.activateUI(UIType,freeSlot, showThisUnitsUI);
         }
-
+        else
+        {
+            UIChooser.ins.deActivateAll();
+        }
+        
     }
 
     private void Awake()

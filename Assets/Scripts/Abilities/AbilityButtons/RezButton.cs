@@ -5,6 +5,7 @@ using UnityEngine;
 public class RezButton : MonoBehaviour
 {
     public List<UnitTypes> targetTypes;
+    public TaskTypes type;
     public GameObject targeting;
 
     public void startTargeting()
@@ -15,6 +16,6 @@ public class RezButton : MonoBehaviour
         }
         GameObject target = Instantiate(targeting);
          
-        target.GetComponent<Targeting>().receiveTargetTypes(targetTypes);
+        target.GetComponent<Targeting>().receiveTargetTypes(targetTypes, type);
     }
 }

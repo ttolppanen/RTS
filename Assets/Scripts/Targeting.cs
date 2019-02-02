@@ -6,6 +6,7 @@ public class Targeting : MonoBehaviour
 {
     public static Targeting ins;
     private List<UnitTypes> targetTypes;
+    private TaskTypes taskType;
     public Task task;
 
 
@@ -34,10 +35,6 @@ public class Targeting : MonoBehaviour
                     doAbility(hit.transform.gameObject);
                 }
             }
-            else
-            {
-                doAbilityNoTarget();
-            }
         }
 
         if(Input.GetMouseButtonDown(1))
@@ -47,8 +44,9 @@ public class Targeting : MonoBehaviour
         }
     }
 
-    public void receiveTargetTypes(List<UnitTypes> yeet)
+    public void receiveTargetTypes(List<UnitTypes> yeet, TaskTypes type)
     {
+        taskType = type;
         targetTypes = yeet;
         MouseControl.ins.mouseState = MouseStates.targeting;
 
@@ -57,10 +55,12 @@ public class Targeting : MonoBehaviour
     private void doAbility(GameObject target)
     {
         Task k = new Task(GM.tasks[TaskTypes.resurrect], new List<GameObject> { target }, 50);
+        Vector2Int mousePos = UF.GetMousePosCoordinated();
+        Vector2Int unitPos = UF.CoordinatePosition(UIChooser.ins.transform.position);
+        List<Vector2Int> path = Map.ins.AStarPathFinding(unitPos, mousePos);
+        UIChooser.ins.whoseUI.GetComponent<UnitMovement>().Move(path, k);
+        MouseControl.ins.mouseState = MouseStates.idle;
+        Destroy(this);
     }
 
-    private void doAbilityNoTarget()
-    {
-
-    }
 }
