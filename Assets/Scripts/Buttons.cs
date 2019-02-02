@@ -6,7 +6,17 @@ public class Buttons : MonoBehaviour
 {
     public UITypes UI;
     public int hierachy;
+    public List<GameObject> unitButtons;
 
+    public List<GameObject> giveButtons()
+    {
+        return unitButtons;
+    }
+
+    public UITypes giveUI()
+    {
+        return UI;
+    }
 
 }
-public enum UITypes { Worker, Building };
+public enum UITypes { Worker, Building, Attacker };

@@ -6,30 +6,50 @@ public class UnitStatus : MonoBehaviour
 {
     public UnitTypes unitType;
     public UnitStates currentState;
-    public float maxHealt;
-    public float currentHealt;
+    public float maxHealth;
+    public float currentHealth;
     public bool isAlive = true;
 
     private void Start()
     {
-        currentHealt = maxHealt;
+        print(currentHealth);
+        if(currentHealth <= 0.0f)
+        {
+            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+            Color colour = new Color(0,0,0,1);
+            sprite.color = colour;
+            gameObject.tag = "Body";
+            print("Hello");
+            isAlive = false;
+        }
     }
 
     public void DealDamage(float damage)
     {
-        currentHealt -= damage;
-        if (currentHealt <= 0)
+        currentHealth -= damage;
+        if (currentHealth <= 0)
         {
             isAlive = false;
+            gameObject.tag = "Body";
         }
     }
 
     public void Heal(float amount)
     {
-        currentHealt += amount;
-        if (currentHealt > maxHealt)
+        currentHealth += amount;
+        if (currentHealth > maxHealth)
         {
-            currentHealt = maxHealt;
+            currentHealth = maxHealth;
         }
+    }
+
+    public void resurrect()
+    {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        Color colour = new Color(1, 1, 1, 1);
+        sprite.color = colour;
+        currentHealth = maxHealth;
+        isAlive = true;
+        gameObject.tag = "Unit";
     }
 }

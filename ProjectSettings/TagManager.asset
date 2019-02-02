@@ -8,6 +8,7 @@ TagManager:
   - Resource
   - Building
   - Enemy
+  - Body
   layers:
   - Default
   - TransparentFX
