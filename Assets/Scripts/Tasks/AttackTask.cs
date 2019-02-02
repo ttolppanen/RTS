@@ -9,11 +9,11 @@ public class AttackTask : MonoBehaviour
     private void Start()
     {
         UnitMovement unitMov = GetComponent<UnitMovement>();
-        UnitStatus unitStatus = GetComponent<UnitStatus>();
         enemy = unitMov.currentTask.objectives[0];
-        if (unitStatus.isAlive)
+        UnitStatus enemyStatus = enemy.GetComponent<UnitStatus>();
+        if (enemyStatus.isAlive)
         {
-            enemy.GetComponent<UnitStatus>().DealDamage(100);
+            enemyStatus.DealDamage(100);
         }
         GetComponent<UnitMovement>().Stop();
     }
