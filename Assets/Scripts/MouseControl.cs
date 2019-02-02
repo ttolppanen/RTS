@@ -125,40 +125,47 @@ public class MouseControl : MonoBehaviour
         {
             if (chosenUnits.Count != 0)
             {
-                foreach (GameObject unit in chosenUnits)
+                if (chosenUnits[0].tag == "Unit")
                 {
-                    Task task = new Task(GM.tasks[TaskTypes.idle], null);
-                    List<Vector2Int> path = new List<Vector2Int>();
-
-                    Vector2Int mousePos = UF.GetMousePosCoordinated();
-                    RaycastHit2D objectUnderMouse = UF.MouseCast();
-                    Vector2Int unitPos = UF.CoordinatePosition(unit.transform.position);
-
-                    if (objectUnderMouse.collider != null && objectUnderMouse.collider.GetComponent<Interactable>() != null) //On painettu objectia ja sille voi tehdä jotain/Siltä löytyy interctable scripti
+                    foreach (GameObject unit in chosenUnits)
                     {
-                        GameObject taskObject = objectUnderMouse.collider.gameObject;
-                        TaskTypes taskType = taskObject.GetComponent<Interactable>().taskType;
-                        if (taskObject.GetComponent<BuildingStatus>() != null) //On jonkin kokoinen
+                        Task task = new Task(GM.tasks[TaskTypes.idle], null);
+                        List<Vector2Int> path = new List<Vector2Int>();
+
+                        Vector2Int mousePos = UF.GetMousePosCoordinated();
+                        RaycastHit2D objectUnderMouse = UF.MouseCast();
+                        Vector2Int unitPos = UF.CoordinatePosition(unit.transform.position);
+
+                        if (objectUnderMouse.collider != null && objectUnderMouse.collider.GetComponent<Interactable>() != null) //On painettu objectia ja sille voi tehdä jotain/Siltä löytyy interctable scripti
                         {
-                            Vector2Int size = taskObject.GetComponent<BuildingStatus>().size;
-                            path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), size);
+                            GameObject taskObject = objectUnderMouse.collider.gameObject;
+                            TaskTypes taskType = taskObject.GetComponent<Interactable>().taskType;
+                            if (taskObject.GetComponent<BuildingStatus>() != null) //On jonkin kokoinen
+                            {
+                                Vector2Int size = taskObject.GetComponent<BuildingStatus>().size;
+                                path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), size);
+                            }
+                            else if (taskObject.tag == "Enemy")
+                            {
+                                path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), new Vector2Int(1, 1)); //Vihollisilla on vakio koko 1x1
+                            }
+                            else
+                            {
+                                path = Map.ins.AStarPathFinding(unitPos, mousePos);
+                            }
+                            task = new Task(GM.tasks[taskType], new List<GameObject> { taskObject });
                         }
                         else
                         {
                             path = Map.ins.AStarPathFinding(unitPos, mousePos);
                         }
-                        task = new Task(GM.tasks[taskType], new List<GameObject> { taskObject });
-                    }
-                    else
-                    {
-                        path = Map.ins.AStarPathFinding(unitPos, mousePos);
-                    }
-                    if (!(path.Count == 1 && path[0] == new Vector2Int(-999, -999)))//jos path[0] = -999,-999 niin ei toimi...
-                    {
-                        unit.GetComponent<UnitMovement>().Move(path, task);
+                        if (!(path.Count == 1 && path[0] == new Vector2Int(-999, -999)))//jos path[0] = -999,-999 niin ei toimi...
+                        {
+                            unit.GetComponent<UnitMovement>().Move(path, task);
+                        }
                     }
                 }
-            }
+            }    
         }
     }
 }
