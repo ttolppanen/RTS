@@ -140,6 +140,7 @@ public class MouseControl : MonoBehaviour
                         {
                             GameObject taskObject = objectUnderMouse.collider.gameObject;
                             TaskTypes taskType = taskObject.GetComponent<Interactable>().taskType;
+                            task = new Task(GM.tasks[taskType], new List<GameObject> { taskObject });
                             if (taskObject.GetComponent<BuildingStatus>() != null) //On jonkin kokoinen
                             {
                                 Vector2Int size = taskObject.GetComponent<BuildingStatus>().size;
@@ -153,12 +154,12 @@ public class MouseControl : MonoBehaviour
                             {
                                 path = Map.ins.AStarPathFinding(unitPos, mousePos);
                             }
-                            task = new Task(GM.tasks[taskType], new List<GameObject> { taskObject });
                         }
                         else
                         {
                             path = Map.ins.AStarPathFinding(unitPos, mousePos);
                         }
+
                         if (!(path.Count == 1 && path[0] == new Vector2Int(-999, -999)))//jos path[0] = -999,-999 niin ei toimi...
                         {
                             unit.GetComponent<UnitMovement>().Move(path, task);

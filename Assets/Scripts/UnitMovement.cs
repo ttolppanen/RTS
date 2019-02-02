@@ -25,6 +25,16 @@ public class UnitMovement : MonoBehaviour
     {
         if (path.Count != 0)
         {
+            if (currentTask.taskRange != 0)
+            {
+                if ((currentTask.objectives[0].transform.position - transform.position).magnitude <= currentTask.taskRange) //Jos etäisyys kohteeseen on vähemmän kuin taskiRange
+                {
+                    rb.velocity = Vector2.zero;
+                    path.Clear();
+                    StartTask();
+                    return;
+                }
+            }
             Vector2 vectorToNextPoint = path[i + 1] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position;
             if (Vector2.Dot(vectorToNextPoint, movingDirection) <= 0)
             {
