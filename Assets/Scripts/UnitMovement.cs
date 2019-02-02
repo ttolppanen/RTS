@@ -48,6 +48,7 @@ public class UnitMovement : MonoBehaviour
                 else
                 {
                     movingDirection = (path[i + 1] - path[i]);
+                    TurnUnit();
                 }
             }
         }
@@ -91,6 +92,7 @@ public class UnitMovement : MonoBehaviour
         {
             i = 0;
             movingDirection = (path[1] - path[0]);
+            TurnUnit();
         }
         else
         {
@@ -111,6 +113,12 @@ public class UnitMovement : MonoBehaviour
         {
             Destroy(currentTask.taskScriptInstance);
         }
+    }
+
+    void TurnUnit()
+    {
+        float angle = Mathf.Atan2(movingDirection.y, movingDirection.x);
+        transform.rotation = Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg - 90);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
