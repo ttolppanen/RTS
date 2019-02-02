@@ -140,4 +140,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa6f3e8840544c94e8faae86ceb7fd78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  taskType: 1
+  taskType: 3

@@ -15,7 +15,7 @@ public class UnitStatus : MonoBehaviour
         currentHealt = maxHealt;
     }
 
-    public void TakeDamage(float damage)
+    public void DealDamage(float damage)
     {
         currentHealt -= damage;
         if (currentHealt <= 0)

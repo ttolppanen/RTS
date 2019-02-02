@@ -9,14 +9,15 @@ public class GM : MonoBehaviour
     public static IDictionary<TaskTypes, string> tasks = new Dictionary<TaskTypes, string>() //String on sen taskin scriptin nimi! Eli task on scripti mikä annetaan ukolle kun se on liikkunut maaliin.
     {
         { TaskTypes.idle, "idle"},
-        { TaskTypes.collectResource, "CollectResourceTask" },
-        { TaskTypes.bringBackResource, "ReturnResourceTask" }
+        { TaskTypes.attack, "AttackTask"},
+        { TaskTypes.bringBackResource, "ReturnResourceTask" },
+        { TaskTypes.collectResource, "CollectResourceTask" }
     };
     public static List<LandTypes> allowedLand = new List<LandTypes> { LandTypes.grass, LandTypes.sand};
 }
 
 public enum LandTypes { sea, grass, tree, sand, building, stone, lastNumber };
 public enum ResourceTypes { wood, stone, soul };
-public enum TaskTypes { idle, collectResource, bringBackResource};
+public enum TaskTypes { idle, attack, bringBackResource, collectResource};
 public enum UnitStates { idle, casting, moving, attacking, building};
 public enum UnitTypes { wizard, worker, enemy, body};
