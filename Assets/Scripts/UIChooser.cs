@@ -6,7 +6,7 @@ public class UIChooser : MonoBehaviour
 {
     public GameObject[] UIs;
     public static UIChooser ins;
-    
+    public List<Transform> freeSlots;
 
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class UIChooser : MonoBehaviour
     }
 
 
-    public void activateUI(UITypes type)
+    public void activateUI(UITypes type, List<GameObject> freeButtons)
     {
         deActivateAll();
         switch(type)
@@ -33,6 +33,10 @@ public class UIChooser : MonoBehaviour
             case UITypes.Building:
                 UIs[1].SetActive(true);
             break;
+
+            case UITypes.Attacker:
+                UIs[2].SetActive(true);
+            break;
         }
     }
 
@@ -41,6 +45,18 @@ public class UIChooser : MonoBehaviour
         foreach (GameObject UI in UIs)
         {
             UI.SetActive(false);
+        }
+
+        foreach (Transform slot in freeSlots)
+        {
+            if(slot.childCount>0)
+            {
+                Destroy(slot.GetChild(0));
+            }
+            else
+            {
+                break;
+            }
         }
     }
 

@@ -35,9 +35,11 @@ public class MouseControl : MonoBehaviour
                 }
             }
 
-            Buttons buttons = showThisUnitsUI.GetComponent<Buttons>();
+            UITypes UIType = showThisUnitsUI.GetComponent<Buttons>().giveUI();
+            List<GameObject> freeSlot = showThisUnitsUI.GetComponent<Buttons>().giveButtons();
 
-            UIChooser.ins.activateUI(buttons.UI);
+
+            UIChooser.ins.activateUI(UIType,freeSlot);
         }
 
     }
