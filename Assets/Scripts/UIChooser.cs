@@ -38,6 +38,13 @@ public class UIChooser : MonoBehaviour
                 UIs[2].SetActive(true);
             break;
         }
+
+        for(int i = 0; i<freeButtons.Count; i++)
+        {
+
+            GameObject button = Instantiate(freeButtons[i],freeSlots[i]);
+            button.SetActive(true);
+        }
     }
 
     public void deActivateAll()

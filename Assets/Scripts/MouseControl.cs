@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum MouseStates { idle, choosingUnits, building };
+public enum MouseStates { idle, choosingUnits, building, targeting};
 
 public class MouseControl : MonoBehaviour
 {
