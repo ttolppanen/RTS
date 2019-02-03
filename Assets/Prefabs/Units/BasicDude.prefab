@@ -170,6 +170,8 @@ MonoBehaviour:
   maxHealth: 5
   currentHealth: 5
   isAlive: 1
+  soulsToLive: 1
+  soulsNow: 1
 --- !u!114 &836413331906385000
 MonoBehaviour:
   m_ObjectHideFlags: 0

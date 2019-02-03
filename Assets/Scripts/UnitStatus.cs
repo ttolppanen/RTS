@@ -9,19 +9,25 @@ public class UnitStatus : MonoBehaviour
     public float maxHealth;
     public float currentHealth;
     public bool isAlive = true;
+    public int soulsToLive;
+    public int soulsNow;
+
 
     private void Start()
     {
-        print(currentHealth);
         if(currentHealth <= 0.0f)
         {
             SpriteRenderer sprite = GetComponent<SpriteRenderer>();
             Color colour = new Color(0,0,0,1);
             sprite.color = colour;
             gameObject.tag = "Body";
-            print("Hello");
             isAlive = false;
         }
+    }
+
+    public int howManySouls()
+    {
+        return soulsToLive - soulsNow;
     }
 
     public void DealDamage(float damage)

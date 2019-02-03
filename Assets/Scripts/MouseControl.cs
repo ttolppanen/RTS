@@ -63,115 +63,125 @@ public class MouseControl : MonoBehaviour
 
     void Update()
     {
-        if (!(mouseState == MouseStates.idle || mouseState == MouseStates.choosingUnits))//kun tehään jotain muuta niin pietetään valitut listat tyhjänä ja ei sallita nuita napin painalluksia
-        {
-            chosenUnits.Clear();
-            return;
-        }
         if (UF.IsOnUI())
         {
             return;
         }
-
-        //Left Click
-        if (Input.GetMouseButtonDown(0))
+        switch(mouseState)
         {
-            boxMouseStart = UF.GetMousePos();
-            mouseState = MouseStates.choosingUnits;
-        }
-        else if (Input.GetMouseButton(0) && mouseState == MouseStates.choosingUnits)
-        {
-            boxMouseEnd = UF.GetMousePos();
-            boxSize = boxMouseEnd - boxMouseStart;
-            if (boxMouseEnd == boxMouseStart)
-            {
-                selectingBoxGraphic.SetActive(false);
-            }
-            else
-            {
-                selectingBoxGraphic.SetActive(true);
-                selectingBoxGraphic.transform.localScale = boxSize;
-                selectingBoxGraphic.transform.position = boxMouseStart;
-            }
-        }
-        else if (Input.GetMouseButtonUp(0) && mouseState == MouseStates.choosingUnits)
-        {
-            RaycastHit2D[] hits = new RaycastHit2D[1];
-            if (boxMouseEnd == boxMouseStart)
-            {
-                hits[0] = UF.MouseCast();
-            }
-            else
-            {
-                selectingBoxGraphic.transform.localScale = boxSize;
-                boxSize.x = Mathf.Abs(boxSize.x);
-                boxSize.y = Mathf.Abs(boxSize.y);
-                hits = Physics2D.BoxCastAll((boxMouseStart + boxMouseEnd) / 2f, boxSize, 0f, Vector2.zero, 0f, LayerMask.GetMask("Unit"));
-            }
-
-            selectingBoxGraphic.SetActive(false);
-            chosenUnits.Clear();
-
-            foreach (RaycastHit2D hit in hits)
-            {
-                if (hit.collider != null)
+            case MouseStates.idle:
+                if (Input.GetMouseButtonDown(0))
                 {
-                    chosenUnits.Add(hit.transform.gameObject);
+                    boxMouseStart = UF.GetMousePos();
+                    mouseState = MouseStates.choosingUnits;
                 }
-            }
 
-            chooseUI();
-
-            mouseState = MouseStates.idle;
-        }
-
-        //Right Click
-        else if (Input.GetMouseButtonDown(1))
-        {
-            if (chosenUnits.Count != 0)
-            {
-                if (chosenUnits[0].tag == "Unit")
+                //Right Click
+                if (Input.GetMouseButtonDown(1))
                 {
-                    foreach (GameObject unit in chosenUnits)
+                    if (chosenUnits.Count != 0)
                     {
-                        Task task = new Task(GM.tasks[TaskTypes.idle], null);
-                        List<Vector2Int> path = new List<Vector2Int>();
-
-                        Vector2Int mousePos = UF.GetMousePosCoordinated();
-                        RaycastHit2D objectUnderMouse = UF.MouseCast();
-                        Vector2Int unitPos = UF.CoordinatePosition(unit.transform.position);
-
-                        if (objectUnderMouse.collider != null && objectUnderMouse.collider.GetComponent<Interactable>() != null) //On painettu objectia ja sille voi tehdä jotain/Siltä löytyy interctable scripti
+                        if (chosenUnits[0].tag == "Unit")
                         {
-                            GameObject taskObject = objectUnderMouse.collider.gameObject;
-                            TaskTypes taskType = taskObject.GetComponent<Interactable>().taskType;
-                            task = new Task(GM.tasks[taskType], new List<GameObject> { taskObject });
-                            if (taskObject.GetComponent<BuildingStatus>() != null) //On jonkin kokoinen
+                            foreach (GameObject unit in chosenUnits)
                             {
-                                Vector2Int size = taskObject.GetComponent<BuildingStatus>().size;
-                                path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), size);
-                            }
-                            else if (taskObject.tag == "Enemy")
-                            {
-                                path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), new Vector2Int(1, 1)); //Vihollisilla on vakio koko 1x1
-                            }
-                            else
-                            {
-                                path = Map.ins.AStarPathFinding(unitPos, mousePos);
-                            }
-                        }
-                        else
-                        {
-                            path = Map.ins.AStarPathFinding(unitPos, mousePos);
-                        }
+                                Task task = new Task(GM.tasks[TaskTypes.idle], null);
+                                List<Vector2Int> path = new List<Vector2Int>();
 
-                        if (!(path.Count == 1 && path[0] == new Vector2Int(-999, -999)))//jos path[0] = -999,-999 niin ei toimi...
-                        {
-                            unit.GetComponent<UnitMovement>().Move(path, task);
+                                Vector2Int mousePos = UF.GetMousePosCoordinated();
+                                RaycastHit2D objectUnderMouse = UF.MouseCast();
+                                Vector2Int unitPos = UF.CoordinatePosition(unit.transform.position);
+
+                                if (objectUnderMouse.collider != null && objectUnderMouse.collider.GetComponent<Interactable>() != null) //On painettu objectia ja sille voi tehdä jotain/Siltä löytyy interctable scripti
+                                {
+                                    GameObject taskObject = objectUnderMouse.collider.gameObject;
+                                    TaskTypes taskType = taskObject.GetComponent<Interactable>().taskType;
+                                    task = new Task(GM.tasks[taskType], new List<GameObject> { taskObject });
+                                    if (taskObject.GetComponent<BuildingStatus>() != null) //On jonkin kokoinen
+                                    {
+                                        Vector2Int size = taskObject.GetComponent<BuildingStatus>().size;
+                                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), size);
+                                    }
+                                    else if (taskObject.tag == "Enemy")
+                                    {
+                                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), new Vector2Int(1, 1)); //Vihollisilla on vakio koko 1x1
+                                    }
+                                    else
+                                    {
+                                        path = Map.ins.AStarPathFinding(unitPos, mousePos);
+                                    }
+                                }
+                                else
+                                {
+                                    path = Map.ins.AStarPathFinding(unitPos, mousePos);
+                                }
+
+                                if (!(path.Count == 1 && path[0] == new Vector2Int(-999, -999)))//jos path[0] = -999,-999 niin ei toimi...
+                                {
+                                    unit.GetComponent<UnitMovement>().Move(path, task);
+                                }
+                            }
                         }
                     }
                 }
-            }    
+
+                break;
+
+            case MouseStates.choosingUnits:
+                if (Input.GetMouseButton(0))
+                {
+                    boxMouseEnd = UF.GetMousePos();
+                    boxSize = boxMouseEnd - boxMouseStart;
+                    if (boxMouseEnd == boxMouseStart)
+                    {
+                        selectingBoxGraphic.SetActive(false);
+                    }
+                    else
+                    {
+                        selectingBoxGraphic.SetActive(true);
+                        selectingBoxGraphic.transform.localScale = boxSize;
+                        selectingBoxGraphic.transform.position = boxMouseStart;
+                    }
+                }
+                else if (Input.GetMouseButtonUp(0))
+                {
+                    RaycastHit2D[] hits = new RaycastHit2D[1];
+                    if (boxMouseEnd == boxMouseStart)
+                    {
+                        hits[0] = UF.MouseCast();
+                    }
+                    else
+                    {
+                        selectingBoxGraphic.transform.localScale = boxSize;
+                        boxSize.x = Mathf.Abs(boxSize.x);
+                        boxSize.y = Mathf.Abs(boxSize.y);
+                        hits = Physics2D.BoxCastAll((boxMouseStart + boxMouseEnd) / 2f, boxSize, 0f, Vector2.zero, 0f, LayerMask.GetMask("Unit"));
+                    }
+
+                    selectingBoxGraphic.SetActive(false);
+                    chosenUnits.Clear();
+
+                    foreach (RaycastHit2D hit in hits)
+                    {
+                        if (hit.collider != null)
+                        {
+                            chosenUnits.Add(hit.transform.gameObject);
+                        }
+                    }
+
+                    chooseUI();
+
+                    mouseState = MouseStates.idle;
+                }
+
+                if (Input.GetMouseButtonDown(1))
+                {
+                    selectingBoxGraphic.SetActive(false);
+                    mouseState = MouseStates.idle;
+                }
+                break;
         }
+        
+        
     }
 }

@@ -223,5 +223,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetTypes: 03000000
   type: 4
+  taskRange: 2
   targeting: {fileID: 5127618590900903743, guid: 2e3b4f2993916c343bce1bf941a7955a,
     type: 3}

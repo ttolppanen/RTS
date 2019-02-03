@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 48254158881016934}
   - component: {fileID: 48254158881016932}
   - component: {fileID: 48254158881016931}
+  - component: {fileID: 2773902180118613530}
   m_Layer: 8
   m_Name: RuaWizard
   m_TagString: Unit
@@ -136,6 +137,7 @@ MonoBehaviour:
   hierachy: 100
   unitButtons:
   - {fileID: 4370861222661706181, guid: 0b6c7d03663d9424eb5dce892fb5348b, type: 3}
+  - {fileID: 7032178425195473651, guid: bfc0b2e5403aa524d8a6c5d98915324e, type: 3}
 --- !u!114 &48254158881016931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,3 +154,22 @@ MonoBehaviour:
   acceleration: 10
   topSpeed: 3
   repulsionStrength: 50
+--- !u!114 &2773902180118613530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48254158881016930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d43ff47055ee6c241bea985ea17bb088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitType: 0
+  currentState: 0
+  maxHealth: 10
+  currentHealth: 10
+  isAlive: 1
+  soulsToLive: 0
+  soulsNow: 0

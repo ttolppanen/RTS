@@ -6,16 +6,18 @@ public class RezButton : MonoBehaviour
 {
     public List<UnitTypes> targetTypes;
     public TaskTypes type;
+    public int taskRange;
     public GameObject targeting;
 
     public void startTargeting()
     {
         if(Targeting.ins != null)
         {
-            Destroy(Targeting.ins);
+            Destroy(Targeting.ins.gameObject);
+            
         }
         GameObject target = Instantiate(targeting);
          
-        target.GetComponent<Targeting>().receiveTargetTypes(targetTypes, type);
+        target.GetComponent<Targeting>().receiveTargetTypes(targetTypes, type, taskRange);
     }
 }
