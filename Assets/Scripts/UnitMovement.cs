@@ -27,6 +27,7 @@ public class UnitMovement : MonoBehaviour
         {
             if (currentTask.taskRange != 0)
             {
+                //Korjaa etäisyys mittaus vektori2...
                 if ((currentTask.objectives[0].transform.position - transform.position).magnitude <= currentTask.taskRange) //Jos etäisyys kohteeseen on vähemmän kuin taskiRange
                 {
                     rb.velocity = Vector2.zero;

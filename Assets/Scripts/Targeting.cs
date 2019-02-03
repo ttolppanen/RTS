@@ -55,10 +55,9 @@ public class Targeting : MonoBehaviour
 
     private void doAbility(GameObject target)
     {
-        print(taskRange);
         Task k = new Task(GM.tasks[taskType], new List<GameObject> { target }, taskRange);
         Vector2Int mousePos = UF.GetMousePosCoordinated();
-        Vector2Int unitPos = UF.CoordinatePosition(UIChooser.ins.transform.position);
+        Vector2Int unitPos = UF.CoordinatePosition(UIChooser.ins.whoseUI.transform.position);
         List<Vector2Int> path = Map.ins.AStarPathFinding(unitPos, mousePos);
         UIChooser.ins.whoseUI.GetComponent<UnitMovement>().Move(path, k);
         MouseControl.ins.mouseState = MouseStates.idle;
