@@ -10,6 +10,8 @@ public class UnitMovement : MonoBehaviour
     int i; //Missä kohdassa path polkua ollaan menossa.
     Rigidbody2D rb;
     Vector2 movingDirection;
+    Animator anim;
+    AnimatorController animControl;
     public Task currentTask;
     public float acceleration;
     public float topSpeed;
@@ -19,6 +21,8 @@ public class UnitMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         transform.position = CordPosition();
+        anim = GetComponent<Animator>();
+        animControl = GetComponent<AnimatorController>();
     }
 
     private void Update()
@@ -30,9 +34,7 @@ public class UnitMovement : MonoBehaviour
                 //Korjaa etäisyys mittaus vektori2...
                 if ((currentTask.objectives[0].transform.position - transform.position).magnitude <= currentTask.taskRange) //Jos etäisyys kohteeseen on vähemmän kuin taskiRange
                 {
-                    rb.velocity = Vector2.zero;
-                    path.Clear();
-                    StartTask();
+                    GoalReached();
                     return;
                 }
             }
@@ -42,13 +44,12 @@ public class UnitMovement : MonoBehaviour
                 i++;
                 if (i == path.Count - 1)
                 {
-                    rb.velocity = Vector2.zero;
-                    path.Clear();
-                    StartTask();
+                    GoalReached();
                 }
                 else
                 {
                     movingDirection = (path[i + 1] - path[i]);
+                    transform.rotation = UF.TurnUnit(movingDirection, -90f);
                 }
             }
         }
@@ -64,6 +65,14 @@ public class UnitMovement : MonoBehaviour
         {
             rb.velocity = rb.velocity.normalized * topSpeed;
         }
+    }
+
+    void GoalReached()
+    {
+        rb.velocity = Vector2.zero;
+        path.Clear();
+        anim.SetBool("Running", false);
+        StartTask();
     }
 
     void StartTask()
@@ -86,12 +95,15 @@ public class UnitMovement : MonoBehaviour
             return;
         }
         ResetTaskInstance();
+        animControl.ResetAnimations();
         currentTask = newTask;
         path = newPath;
         if (path.Count > 1)
         {
             i = 0;
+            anim.SetBool("Running", true);
             movingDirection = (path[1] - path[0]);
+            transform.rotation = UF.TurnUnit(movingDirection, -90f);
         }
         else
         {
@@ -103,6 +115,8 @@ public class UnitMovement : MonoBehaviour
     {
         path.Clear();
         ResetTaskInstance();
+        animControl.ResetAnimations();
+        rb.velocity = Vector2.zero;
         currentTask = new Task(GM.tasks[TaskTypes.idle], null);
     }
 

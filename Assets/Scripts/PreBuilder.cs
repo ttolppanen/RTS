@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PreBuilder : MonoBehaviour
 {
+    public static GameObject ins;
+
     public GameObject buildingToSpawn;
     Vector2Int size;
     int[] resourceCost;
@@ -12,8 +14,20 @@ public class PreBuilder : MonoBehaviour
     Color canBuildColor = new Color(1, 1.5f, 1);
     Color cannotBuildColor = new Color(1.5f, 1, 1);
 
-    private void Start()
+    private void Awake()
     {
+        if (ins == null)
+        {
+            ins = gameObject;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    { 
         sr = GetComponent<SpriteRenderer>();
         bwMaterial = sr.material;
         Sprite buildingSprite = buildingToSpawn.GetComponent<SpriteRenderer>().sprite;
