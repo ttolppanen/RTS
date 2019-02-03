@@ -7,16 +7,18 @@ public class CollectResourceTask : MonoBehaviour
     GameObject resourceObject;
     ResourceNode resourceScript;
     ResourceTypes resourceType;
-    float collectTime;
     int resourceCollectAmount;
     UnitResources resources;
     UnitMovement movScript;
-    float time;
+    Animator anim;
+    AnimatorController animControl;
 
     private void Start()
     {
         resources = GetComponent<UnitResources>();
         movScript = GetComponent<UnitMovement>();
+        anim = GetComponent<Animator>();
+        animControl = GetComponent<AnimatorController>();
         resourceObject = movScript.currentTask.objectives[0];
         if (resourceObject == null)//Jos on käynyt tosi huono tuuri ja juuri viimeframen aikana puu on tuhoutunut? Vaikka liikkumisen aikana tai jtn emt.
         {
@@ -25,25 +27,35 @@ public class CollectResourceTask : MonoBehaviour
         }
         resourceScript = resourceObject.GetComponent<ResourceNode>();
         resourceType = resourceScript.type;
-        collectTime = 0.3f;
         resourceCollectAmount = 30;
     }
 
     private void Update()
     {
-        if (time >= collectTime)
+        if (resourceObject == null || resourceScript.isDead)
         {
-            if (resourceObject == null || resourceScript.isDead)
-            {
-                Reset();
-            }
-            else
-            {
-                CollectResource();
-            }
-            time = 0;
+            Reset();
         }
-        time += Time.deltaTime;
+        else
+        {
+            if (animControl.allowedToDo)
+            {
+                switch (resourceType)
+                {
+                    case ResourceTypes.wood:
+                        anim.SetBool("CuttingWood", true);
+                        break;
+                    case ResourceTypes.stone:
+                        print("Kivelle ei ole vielä animaatiota, muista tehdä tänne se animaatio ja silleen");
+                        break;
+                }
+            }
+        }
+        if (animControl.action)
+        {
+            animControl.action = false;
+            CollectResource();
+        }
     }
 
     void CollectResource()
@@ -87,7 +99,7 @@ public class CollectResourceTask : MonoBehaviour
         GameObject newNode = FindANewNode(new List<Vector2Int>(), UF.CoordinatePosition(transform.position), landType);
         if (newNode == null)
         {
-            Destroy(this);
+            movScript.Stop();
             return;
         }
         Vector2Int newNodeLocation = UF.CoordinatePosition(newNode.transform.position);
@@ -98,7 +110,11 @@ public class CollectResourceTask : MonoBehaviour
         {
             movScript.Move(path, task);
         }
-        Destroy(this);
+        else
+        {
+            movScript.Stop();
+        }
+      
     }
     
     void BringBackResource()

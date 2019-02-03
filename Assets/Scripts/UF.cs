@@ -39,6 +39,11 @@ public class UF
         return new Vector2Int((int)pos.x, (int)pos.y);
     }
 
+    public static Vector2 Vec3ToVec2(Vector3 pos)
+    {
+        return new Vector2(pos.x, pos.y);
+    }
+
     public static bool IsOnUI()
     {
         return EventSystem.current.IsPointerOverGameObject();
@@ -54,5 +59,11 @@ public class UF
         {
             return LandTypes.tree;
         }
+    }
+
+    public static Quaternion TurnUnit(Vector2 lookingDirection, float phaseShift)
+    {
+        float angle = Mathf.Atan2(lookingDirection.y, lookingDirection.x);
+        return Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg + phaseShift);
     }
 }
