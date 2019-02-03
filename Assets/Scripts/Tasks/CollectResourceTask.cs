@@ -19,7 +19,6 @@ public class CollectResourceTask : MonoBehaviour
         movScript = GetComponent<UnitMovement>();
         anim = GetComponent<Animator>();
         animControl = GetComponent<AnimatorController>();
-        print(anim.GetCurrentAnimatorStateInfo(0).length);
         resourceObject = movScript.currentTask.objectives[0];
         if (resourceObject == null)//Jos on käynyt tosi huono tuuri ja juuri viimeframen aikana puu on tuhoutunut? Vaikka liikkumisen aikana tai jtn emt.
         {
@@ -100,7 +99,7 @@ public class CollectResourceTask : MonoBehaviour
         GameObject newNode = FindANewNode(new List<Vector2Int>(), UF.CoordinatePosition(transform.position), landType);
         if (newNode == null)
         {
-            Destroy(this);
+            movScript.Stop();
             return;
         }
         Vector2Int newNodeLocation = UF.CoordinatePosition(newNode.transform.position);
@@ -111,7 +110,11 @@ public class CollectResourceTask : MonoBehaviour
         {
             movScript.Move(path, task);
         }
-        Destroy(this);
+        else
+        {
+            movScript.Stop();
+        }
+      
     }
     
     void BringBackResource()

@@ -48,7 +48,7 @@ public class UnitMovement : MonoBehaviour
                 else
                 {
                     movingDirection = (path[i + 1] - path[i]);
-                    TurnUnit();
+                    transform.rotation = UF.TurnUnit(movingDirection, -90f);
                 }
             }
         }
@@ -102,7 +102,7 @@ public class UnitMovement : MonoBehaviour
             i = 0;
             anim.SetBool("Running", true);
             movingDirection = (path[1] - path[0]);
-            TurnUnit();
+            transform.rotation = UF.TurnUnit(movingDirection, -90f);
         }
         else
         {
@@ -125,12 +125,6 @@ public class UnitMovement : MonoBehaviour
         {
             Destroy(currentTask.taskScriptInstance);
         }
-    }
-
-    void TurnUnit()
-    {
-        float angle = Mathf.Atan2(movingDirection.y, movingDirection.x);
-        transform.rotation = Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg - 90);
     }
 
     private void OnTriggerStay2D(Collider2D collision)

@@ -359,6 +359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   action: 0
+  allowedToDo: 1
 --- !u!95 &530810124
 Animator:
   serializedVersion: 3
@@ -397,6 +398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   action: 0
+  allowedToDo: 1
 --- !u!95 &542556898
 Animator:
   serializedVersion: 3
@@ -945,7 +947,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 214764b95ff7d9f4b936ebcc9e2b843d,
+      objectReference: {fileID: 21300004, guid: b31d5cfaf84df3c4c84ab3155d255385,
         type: 3}
     - target: {fileID: 6739369405496992391, guid: 77433dc2a5bed4247a84ac79a0e91870,
         type: 3}
@@ -997,6 +999,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   action: 0
+  allowedToDo: 1
 --- !u!224 &1434152411587644873 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1434152411587644873, guid: ad60512998b7c184c9bf81202140260e,
