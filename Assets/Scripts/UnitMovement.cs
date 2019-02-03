@@ -11,6 +11,7 @@ public class UnitMovement : MonoBehaviour
     Rigidbody2D rb;
     Vector2 movingDirection;
     Animator anim;
+    AnimatorController animControl;
     public Task currentTask;
     public float acceleration;
     public float topSpeed;
@@ -21,6 +22,7 @@ public class UnitMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         transform.position = CordPosition();
         anim = GetComponent<Animator>();
+        animControl = GetComponent<AnimatorController>();
     }
 
     private void Update()
@@ -92,6 +94,7 @@ public class UnitMovement : MonoBehaviour
             return;
         }
         ResetTaskInstance();
+        animControl.ResetAnimations();
         currentTask = newTask;
         path = newPath;
         if (path.Count > 1)
@@ -111,7 +114,8 @@ public class UnitMovement : MonoBehaviour
     {
         path.Clear();
         ResetTaskInstance();
-        anim.SetBool("Running", false);
+        animControl.ResetAnimations();
+        rb.velocity = Vector2.zero;
         currentTask = new Task(GM.tasks[TaskTypes.idle], null);
     }
 

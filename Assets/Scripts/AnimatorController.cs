@@ -5,6 +5,7 @@ using UnityEngine;
 public class AnimatorController : MonoBehaviour
 {
     public bool action; //Kun tehdään animaatiossa jotain juttua, niin tämä tulee true kun pitäisi tehä se myös koodissa, siis: Hakataan puuta -> Tehdään puun lyönti animaatiota, jossain vaiheessa animaatiota action = true ja sitten puun hakkuu scripti lukee sen ja hakkaa puun
+    public bool allowedToDo = true;
     UnitStatus unitStatus;
     Animator anim;
     int currentAnimName;
@@ -26,8 +27,23 @@ public class AnimatorController : MonoBehaviour
         lastAnimName = currentAnimName;
     }
 
+    public void ResetAnimations()
+    {
+        foreach (AnimatorControllerParameter param in anim.parameters)
+        {
+            anim.SetBool(param.name, false);
+        }
+    }
+
     public void SetActionTrue()
     {
         action = true;
+    }
+
+    public IEnumerator AllowToDoAgainSoon()
+    {
+        allowedToDo = false;
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length); //Odotetaan nykyisen animaation ajan...
+        allowedToDo = true;
     }
 }
