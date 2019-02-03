@@ -11,7 +11,7 @@ public class AnimatorController : MonoBehaviour
     int currentAnimName;
     int lastAnimName;
 
-    void Start()
+    void Awake()
     {
         anim = GetComponent<Animator>();
         unitStatus = GetComponent<UnitStatus>();

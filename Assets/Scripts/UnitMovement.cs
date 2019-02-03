@@ -12,17 +12,19 @@ public class UnitMovement : MonoBehaviour
     Vector2 movingDirection;
     Animator anim;
     AnimatorController animControl;
+    UnitStatus unitStatus;
     public Task currentTask;
     public float acceleration;
     public float topSpeed;
     public float repulsionStrength;
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         transform.position = CordPosition();
         anim = GetComponent<Animator>();
         animControl = GetComponent<AnimatorController>();
+        unitStatus = GetComponent<UnitStatus>();
     }
 
     private void Update()
@@ -107,8 +109,15 @@ public class UnitMovement : MonoBehaviour
         }
         else
         {
+            path.Clear();
             StartTask();
         }
+    }
+
+    public void SetAndStartTask(Task newTask)
+    {
+        currentTask = newTask;
+        StartTask();
     }
 
     public void Stop()
@@ -118,6 +127,7 @@ public class UnitMovement : MonoBehaviour
         animControl.ResetAnimations();
         rb.velocity = Vector2.zero;
         currentTask = new Task(GM.tasks[TaskTypes.idle], null);
+        unitStatus.currentState = UnitStates.idle;
     }
 
     void ResetTaskInstance()
