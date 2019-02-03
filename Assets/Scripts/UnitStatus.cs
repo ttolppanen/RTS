@@ -30,6 +30,17 @@ public class UnitStatus : MonoBehaviour
         return soulsToLive - soulsNow;
     }
 
+    public int soulsToSteal()
+    {
+        return soulsNow;
+    }
+
+    public void stealSouls()
+    {
+        Destroy(gameObject);
+    }
+
+
     public void DealDamage(float damage)
     {
         currentHealth -= damage;
