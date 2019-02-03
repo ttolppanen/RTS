@@ -39,6 +39,11 @@ public class UF
         return new Vector2Int((int)pos.x, (int)pos.y);
     }
 
+    public static Vector2 Vec3ToVec2(Vector3 pos)
+    {
+        return new Vector2(pos.x, pos.y);
+    }
+
     public static bool IsOnUI()
     {
         return EventSystem.current.IsPointerOverGameObject();

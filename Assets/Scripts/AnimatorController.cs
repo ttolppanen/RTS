@@ -7,8 +7,8 @@ public class AnimatorController : MonoBehaviour
     public bool action; //Kun tehdään animaatiossa jotain juttua, niin tämä tulee true kun pitäisi tehä se myös koodissa, siis: Hakataan puuta -> Tehdään puun lyönti animaatiota, jossain vaiheessa animaatiota action = true ja sitten puun hakkuu scripti lukee sen ja hakkaa puun
     UnitStatus unitStatus;
     Animator anim;
-    string currentAnimName = "";
-    string lastAnimName = "";
+    int currentAnimName;
+    int lastAnimName;
 
     void Start()
     {
@@ -18,7 +18,7 @@ public class AnimatorController : MonoBehaviour
 
     void Update()
     {
-        currentAnimName = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+        currentAnimName = anim.GetCurrentAnimatorStateInfo(0).shortNameHash;
         if (currentAnimName != lastAnimName) //Jos animaatio on vaihtunut niin nollataan action...
         {
             action = false;
