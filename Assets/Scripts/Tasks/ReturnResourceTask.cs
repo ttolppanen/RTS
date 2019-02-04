@@ -47,7 +47,6 @@ public class ReturnResourceTask : MonoBehaviour
         Task newTask = new Task(GM.tasks[TaskTypes.collectResource], new List<GameObject> { previousNode });
         Vector2Int nodePoint = UF.CoordinatePosition(previousNode.transform.position);
         Vector2Int nodeSize = previousNode.GetComponent<BuildingStatus>().size;
-        List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), nodePoint, nodePoint, nodeSize);
-        movScript.Move(path, newTask);
+        movScript.GoDoATask(nodePoint, nodeSize, newTask);
     }
 }

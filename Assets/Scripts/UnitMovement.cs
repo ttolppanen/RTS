@@ -33,25 +33,18 @@ public class UnitMovement : MonoBehaviour
         {
             if (currentTask.taskRange != 0)
             {
-                //Korjaa etäisyys mittaus vektori2...
-                if ((currentTask.objectives[0].transform.position - transform.position).magnitude <= currentTask.taskRange) //Jos etäisyys kohteeseen on vähemmän kuin taskiRange
+                if (((Vector2)(currentTask.objectives[0].transform.position) - (Vector2)(transform.position)).magnitude <= currentTask.taskRange) //Jos etäisyys kohteeseen on vähemmän kuin taskiRange
                 {
                     GoalReached();
                     return;
                 }
             }
-            Vector2 vectorToNextPoint = path[i + 1] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position;
-            if (Vector2.Dot(vectorToNextPoint, movingDirection) <= 0)
+            if ((path[i] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position).magnitude <= 0.1f)
             {
                 i++;
-                if (i == path.Count - 1)
+                if (i == path.Count)
                 {
                     GoalReached();
-                }
-                else
-                {
-                    movingDirection = (path[i + 1] - path[i]);
-                    transform.rotation = UF.TurnUnit(movingDirection, -90f);
                 }
             }
         }
@@ -61,6 +54,8 @@ public class UnitMovement : MonoBehaviour
     {
         if (path.Count > 0)
         {
+            movingDirection = (path[i] + new Vector2(0.5f, 0.5f)) - (Vector2)(transform.position);
+            transform.rotation = UF.TurnUnit(movingDirection, -90f);
             rb.AddForce(rb.mass * movingDirection.normalized * acceleration * rb.drag);
         }
         if (rb.velocity.magnitude > topSpeed)
@@ -79,7 +74,7 @@ public class UnitMovement : MonoBehaviour
 
     void StartTask()
     {
-        if (currentTask.taskName != GM.tasks[TaskTypes.idle])
+        if (currentTask != null && currentTask.taskName != GM.tasks[TaskTypes.idle])
         {
             currentTask.taskScriptInstance = (MonoBehaviour)gameObject.AddComponent(Type.GetType(currentTask.taskName)); //Lisätään task nimellä löytyvä koodi jäbälle...
         }
@@ -90,7 +85,94 @@ public class UnitMovement : MonoBehaviour
         return new Vector2((int)transform.position.x + 0.5f, (int)transform.position.y + 0.5f);
     }
 
-    public void Move(List<Vector2Int> newPath, Task newTask)
+    public void GoDoATask(Vector2Int goal, Task newTask) //Mennään vaan jonnekkin pisteeseen tekemään jtn
+    {
+        List<Vector2Int> newPath = Map.ins.AStarPathFinding(UF.CoordinatePosition(transform.position), goal);
+        if (newPath.Count != 0 && newPath[0] == new Vector2Int(-999, -999)) //ei pitäisi oikeasti koskaan päässä tänne?
+        {
+            return;
+        }
+        ResetTaskAndPathAndOthers();
+        currentTask = newTask;
+        path = newPath;
+        if (path.Count == 1)
+        {
+            path.Clear();
+            StartTask();
+        }
+        else
+        {
+            i = 1;
+            anim.SetBool("Running", true);
+            movingDirection = (path[1] + new Vector2(0.5f, 0.5f)) - (Vector2)(transform.position);
+        }
+    }
+
+    public void GoDoATask(Vector2Int goal, Vector2Int buildingSize, Task newTask) //Mennään jollekkin rakennukselle, tai jollekkin millä on koko niin tekemään jtn
+    {
+        List<Vector2Int> newPath = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), goal, goal, buildingSize);
+        if (newPath.Count != 0 && newPath[0] == new Vector2Int(-999, -999)) //ei pitäisi oikeasti koskaan päässä tänne?
+        {
+            return;
+        }
+        ResetTaskAndPathAndOthers();
+        currentTask = newTask;
+        path = newPath;
+        if (path.Count == 1)
+        {
+            path.Clear();
+            StartTask();
+        }
+        else
+        {
+            i = 1;
+            anim.SetBool("Running", true);
+            movingDirection = (path[1] + new Vector2(0.5f, 0.5f)) - (Vector2)(transform.position);
+        }
+    }
+
+    public void GoDoATask(Task newTask)//Mennään tekemään jotain esim jollekkin ukolle, siis jollekkin mikä liikkuu. Tällöis task.objectives[0] tulee olla se kenen luokse ollaan menossa
+    {
+        List<Vector2Int> newPath = Map.ins.AStarPathFinding(UF.CoordinatePosition(transform.position), UF.CoordinatePosition(newTask.objectives[0].transform.position));
+        if (newPath.Count != 0 && newPath[0] == new Vector2Int(-999, -999)) //ei pitäisi oikeasti koskaan päässä tänne?
+        {
+            return;
+        }
+        ResetTaskAndPathAndOthers();
+        currentTask = newTask;
+        path = newPath;
+        if (path.Count == 1)
+        {
+            path.Clear();
+            StartTask();
+        }
+        else
+        {
+            i = 1;
+            anim.SetBool("Running", true);
+            movingDirection = (path[1] + new Vector2(0.5f, 0.5f)) - (Vector2)(transform.position);
+            StartCoroutine(UpdatePath(newTask.objectives[0]));
+        }
+    }
+
+    IEnumerator UpdatePath(GameObject goal)
+    {
+        if (goal == null)
+        {
+            Stop();
+            yield break;
+        }
+        List<Vector2Int> newPath = Map.ins.AStarPathFinding(UF.CoordinatePosition(transform.position), UF.CoordinatePosition(goal.transform.position));
+        if (newPath.Count != 0 && newPath[0] == new Vector2Int(-999, -999)) //ei pitäisi oikeasti koskaan päässä tänne?
+        {
+            Stop();
+            yield break;
+        }
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(UpdatePath(goal));
+    }
+
+   /* public void GoDoATask(List<Vector2Int> newPath, Task newTask)
     {
         if (newPath.Count != 0 && newPath[0] == new Vector2Int(-999, -999)) //ei pitäisi oikeasti koskaan päässä tänne?
         {
@@ -112,7 +194,7 @@ public class UnitMovement : MonoBehaviour
             path.Clear();
             StartTask();
         }
-    }
+    }*/
 
     public void SetAndStartTask(Task newTask)
     {
@@ -122,12 +204,18 @@ public class UnitMovement : MonoBehaviour
 
     public void Stop()
     {
-        path.Clear();
-        ResetTaskInstance();
-        animControl.ResetAnimations();
+        ResetTaskAndPathAndOthers();
         rb.velocity = Vector2.zero;
         currentTask = new Task(GM.tasks[TaskTypes.idle], null);
         unitStatus.currentState = UnitStates.idle;
+    }
+
+    void ResetTaskAndPathAndOthers()
+    {
+        path.Clear();
+        ResetTaskInstance();
+        animControl.ResetAnimations();
+        StopCoroutine("UpdatePath");
     }
 
     void ResetTaskInstance()

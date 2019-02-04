@@ -12,19 +12,19 @@ GameObject:
   - component: {fileID: 6739369405496992389}
   - component: {fileID: 6739369405496992386}
   - component: {fileID: 6739369405496992391}
-  - component: {fileID: 6739369405496992390}
   - component: {fileID: 1338584563141642898}
   - component: {fileID: 8715981660970241173}
   - component: {fileID: 1552796547}
   - component: {fileID: 1552796546}
   - component: {fileID: 1552796555}
+  - component: {fileID: 1960580905}
   m_Layer: 0
   m_Name: EnemyBasic
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6739369405496992388
 Transform:
   m_ObjectHideFlags: 0
@@ -124,22 +124,6 @@ MonoBehaviour:
   acceleration: 50
   topSpeed: 2
   repulsionStrength: 150
---- !u!58 &6739369405496992390
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6739369405496992387}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.3
 --- !u!114 &1338584563141642898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,3 +202,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   action: 0
   allowedToDo: 1
+--- !u!58 &1960580905
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6739369405496992387}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.25
