@@ -35,12 +35,22 @@ public class AnimatorController : MonoBehaviour
         }
     }
 
+    public bool SpendAction()
+    {
+        if (action)
+        {
+            action = false;
+            return true;
+        }
+        return false;
+    }
+
     public void SetActionTrue()
     {
         action = true;
     }
 
-    public IEnumerator AllowToDoAgainSoon()
+    public IEnumerator AllowToDoAgainSoon() //Pitääkö korjata jos muutetaan animation speediä?
     {
         allowedToDo = false;
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length); //Odotetaan nykyisen animaation ajan...

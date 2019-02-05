@@ -51,9 +51,8 @@ public class CollectResourceTask : MonoBehaviour
                 }
             }
         }
-        if (animControl.action)
+        if (animControl.SpendAction())
         {
-            animControl.action = false;
             CollectResource();
         }
     }

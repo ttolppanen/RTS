@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-
-    public float seeingDistance;
     UnitMovement unitMov;
     UnitStatus unitStatus;
     public GameObject target;
@@ -26,24 +24,21 @@ public class EnemyAI : MonoBehaviour
     {
         if (target == null)
         {
-            Collider2D[] colls = Physics2D.OverlapCircleAll((Vector2)(transform.position), seeingDistance, LayerMask.GetMask("Unit"));
+            Collider2D[] colls = Physics2D.OverlapCircleAll(transform.position, unitStatus.seeingDistance, LayerMask.GetMask("Unit"));
             if (colls.Length != 0)
             {
                 target = FindClosestEnemy(colls);
             }
         }
-        else if (UF.DistanceBetween2Units(transform.position, target.transform.position) >= seeingDistance)
+        else if (UF.DistanceBetween2Units(transform.position, target.transform.position) >= unitStatus.seeingDistance)
         {
             target = null;
             unitMov.Stop();
         }
         if(unitStatus.currentState != UnitStates.attacking && target != null)
         {
-            Vector2Int start = UF.CoordinatePosition(transform.position);
-            Vector2Int goal = UF.CoordinatePosition(target.transform.position);
-            List<Vector2Int> path = Map.ins.AStarPathFinding(start, goal);
             Task attackingTask = new Task(GM.tasks[TaskTypes.attack], new List<GameObject> { target }, 1.5f);
-            //unitMov.GoDoATask(path, attackingTask);
+            unitMov.GoDoATask(attackingTask);
         }
         yield return new WaitForSeconds(1f);
         StartCoroutine(StartAttacking());

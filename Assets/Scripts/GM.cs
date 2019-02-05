@@ -16,6 +16,9 @@ public class GM : MonoBehaviour
         { TaskTypes.stealSoul, "StealSoul" }
     };
     public static List<LandTypes> allowedLand = new List<LandTypes> { LandTypes.grass, LandTypes.sand};
+
+    public static float fixedAcceleration = 30;
+    public static float unitRepulsionStrenght = 150;
 }
 
 public enum LandTypes { sea, grass, tree, sand, building, stone, lastNumber };

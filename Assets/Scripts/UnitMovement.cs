@@ -5,7 +5,6 @@ using System;
 
 public class UnitMovement : MonoBehaviour
 {
-    public float speed;
     List<Vector2Int> path = new List<Vector2Int>();
     int i; //Missä kohdassa path polkua ollaan menossa.
     Rigidbody2D rb;
@@ -14,9 +13,6 @@ public class UnitMovement : MonoBehaviour
     AnimatorController animControl;
     UnitStatus unitStatus;
     public Task currentTask;
-    public float acceleration;
-    public float topSpeed;
-    public float repulsionStrength;
 
     private void Awake()
     {
@@ -33,13 +29,13 @@ public class UnitMovement : MonoBehaviour
         {
             if (currentTask.taskRange != 0)
             {
-                if (((Vector2)(currentTask.objectives[0].transform.position) - (Vector2)(transform.position)).magnitude <= currentTask.taskRange) //Jos etäisyys kohteeseen on vähemmän kuin taskiRange
+                if (UF.DistanceBetween2Units(currentTask.objectives[0].transform.position, transform.position) <= currentTask.taskRange) //Jos etäisyys kohteeseen on vähemmän kuin taskiRange
                 {
                     GoalReached();
                     return;
                 }
             }
-            if ((path[i] + new Vector2(0.5f, 0.5f) - (Vector2)transform.position).magnitude <= 0.1f)
+            if (UF.DistanceBetween2Units(path[i] + new Vector2(0.5f, 0.5f), transform.position) <= 0.2f)
             {
                 i++;
                 if (i == path.Count)
@@ -56,11 +52,11 @@ public class UnitMovement : MonoBehaviour
         {
             movingDirection = (path[i] + new Vector2(0.5f, 0.5f)) - (Vector2)(transform.position);
             transform.rotation = UF.TurnUnit(movingDirection, -90f);
-            rb.AddForce(rb.mass * movingDirection.normalized * acceleration * rb.drag);
+            rb.AddForce(rb.mass * movingDirection.normalized * GM.fixedAcceleration);
         }
-        if (rb.velocity.magnitude > topSpeed)
+        if (rb.velocity.magnitude > unitStatus.maxSpeed)
         {
-            rb.velocity = rb.velocity.normalized * topSpeed;
+            rb.velocity = rb.velocity.normalized * unitStatus.maxSpeed;
         }
     }
 
@@ -97,8 +93,7 @@ public class UnitMovement : MonoBehaviour
         path = newPath;
         if (path.Count == 1)
         {
-            path.Clear();
-            StartTask();
+            GoalReached();
         }
         else
         {
@@ -120,8 +115,7 @@ public class UnitMovement : MonoBehaviour
         path = newPath;
         if (path.Count == 1)
         {
-            path.Clear();
-            StartTask();
+            GoalReached();
         }
         else
         {
@@ -143,8 +137,7 @@ public class UnitMovement : MonoBehaviour
         path = newPath;
         if (path.Count == 1)
         {
-            path.Clear();
-            StartTask();
+            GoalReached();
         }
         else
         {
@@ -231,7 +224,7 @@ public class UnitMovement : MonoBehaviour
         if (collision.tag == "Unit")
         {
             Vector2 awayFromOther = transform.position - collision.transform.position;
-            rb.AddForce(awayFromOther.normalized * Time.deltaTime * repulsionStrength * rb.mass * rb.drag);
+            rb.AddForce(awayFromOther.normalized * Time.deltaTime * GM.unitRepulsionStrenght * rb.mass * rb.drag);
         }
     }
 }

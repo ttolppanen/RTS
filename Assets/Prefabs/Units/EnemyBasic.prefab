@@ -100,7 +100,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 1
+  m_LinearDrag: 5
   m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
@@ -120,10 +120,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095532e6e28e04442a38ba454de9b679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  acceleration: 50
-  topSpeed: 2
-  repulsionStrength: 150
 --- !u!114 &1338584563141642898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,6 +139,10 @@ MonoBehaviour:
   isAlive: 1
   soulsToLive: 2
   soulsNow: 2
+  maxSpeed: 1.5
+  attackingDistance: 1
+  seeingDistance: 5
+  damage: 1
 --- !u!114 &8715981660970241173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bb502961b734024881c4cffddc13631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seeingDistance: 6
   target: {fileID: 0}
 --- !u!114 &1552796555
 MonoBehaviour:
@@ -212,7 +213,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
