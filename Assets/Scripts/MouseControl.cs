@@ -86,11 +86,11 @@ public class MouseControl : MonoBehaviour
                             foreach (GameObject unit in chosenUnits)
                             {
                                 Task task = new Task(GM.tasks[TaskTypes.idle], null);
-                                List<Vector2Int> path = new List<Vector2Int>();
 
                                 Vector2Int mousePos = UF.GetMousePosCoordinated();
                                 RaycastHit2D objectUnderMouse = UF.MouseCast();
                                 Vector2Int unitPos = UF.CoordinatePosition(unit.transform.position);
+                                UnitMovement unitMov = unit.GetComponent<UnitMovement>();
 
                                 if (objectUnderMouse.collider != null && objectUnderMouse.collider.GetComponent<Interactable>() != null) //On painettu objectia ja sille voi tehdä jotain/Siltä löytyy interctable scripti
                                 {
@@ -100,31 +100,26 @@ public class MouseControl : MonoBehaviour
                                     if (taskObject.GetComponent<BuildingStatus>() != null) //On jonkin kokoinen
                                     {
                                         Vector2Int size = taskObject.GetComponent<BuildingStatus>().size;
-                                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), size);
+                                        unitMov.GoDoATask(mousePos, size, task);
                                     }
-                                    else if (taskObject.tag == "Enemy")
+                                    else if (taskType == TaskTypes.attack)
                                     {
-                                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), new Vector2Int(1, 1)); //Vihollisilla on vakio koko 1x1
+                                        task.taskRange = unit.GetComponent<UnitStatus>().attackingDistance;
+                                        unitMov.GoDoATask(task);
                                     }
                                     else
                                     {
-                                        path = Map.ins.AStarPathFinding(unitPos, mousePos);
+                                        unitMov.GoDoATask(mousePos, task);
                                     }
                                 }
                                 else
                                 {
-                                    path = Map.ins.AStarPathFinding(unitPos, mousePos);
-                                }
-
-                                if (!(path.Count == 1 && path[0] == new Vector2Int(-999, -999)))//jos path[0] = -999,-999 niin ei toimi...
-                                {
-                                    unit.GetComponent<UnitMovement>().Move(path, task);
+                                    unitMov.GoDoATask(mousePos, task);
                                 }
                             }
                         }
                     }
                 }
-
                 break;
 
             case MouseStates.choosingUnits:

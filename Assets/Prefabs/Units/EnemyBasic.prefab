@@ -12,15 +12,15 @@ GameObject:
   - component: {fileID: 6739369405496992389}
   - component: {fileID: 6739369405496992386}
   - component: {fileID: 6739369405496992391}
-  - component: {fileID: 6739369405496992390}
-  - component: {fileID: 2041694559144902776}
   - component: {fileID: 1338584563141642898}
-  - component: {fileID: 836413331906385000}
-  - component: {fileID: 2063867425}
-  - component: {fileID: 2063867426}
-  m_Layer: 8
-  m_Name: Worker
-  m_TagString: Unit
+  - component: {fileID: 8715981660970241173}
+  - component: {fileID: 1552796547}
+  - component: {fileID: 1552796546}
+  - component: {fileID: 1552796555}
+  - component: {fileID: 1960580905}
+  m_Layer: 0
+  m_Name: EnemyBasic
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300004, guid: b31d5cfaf84df3c4c84ab3155d255385, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9622642, g: 0.39273098, b: 0.09531862, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -120,37 +120,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095532e6e28e04442a38ba454de9b679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!58 &6739369405496992390
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6739369405496992387}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.3
---- !u!114 &2041694559144902776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6739369405496992387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4be82eb4cacb8a14db857aff5cb98985, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UI: 0
-  hierachy: 1
-  unitButtons: []
 --- !u!114 &1338584563141642898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,18 +132,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d43ff47055ee6c241bea985ea17bb088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitType: 1
+  unitType: 2
   currentState: 0
   maxHealth: 5
   currentHealth: 5
   isAlive: 1
-  soulsToLive: 0
-  soulsNow: 0
-  maxSpeed: 2
+  soulsToLive: 2
+  soulsNow: 2
+  maxSpeed: 1.2
   attackingDistance: 0.8
   seeingDistance: 5
   damage: 1
---- !u!114 &836413331906385000
+--- !u!114 &8715981660970241173
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,13 +152,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6739369405496992387}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7341824f7c1f5664790d5bd1a86d88a8, type: 3}
+  m_Script: {fileID: 11500000, guid: aa6f3e8840544c94e8faae86ceb7fd78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carryingAmount: 0
-  carryingType: 0
-  maxResourceAmount: 5000
---- !u!95 &2063867425
+  taskType: 1
+--- !u!95 &1552796547
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -208,7 +175,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2063867426
+--- !u!114 &1552796546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6739369405496992387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bb502961b734024881c4cffddc13631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+--- !u!114 &1552796555
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -222,3 +202,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   action: 0
   allowedToDo: 1
+--- !u!58 &1960580905
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6739369405496992387}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.25

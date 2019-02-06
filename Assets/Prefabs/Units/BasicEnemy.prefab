@@ -16,8 +16,6 @@ GameObject:
   - component: {fileID: 2041694559144902776}
   - component: {fileID: 1338584563141642898}
   - component: {fileID: 836413331906385000}
-  - component: {fileID: 2063867425}
-  - component: {fileID: 2063867426}
   m_Layer: 8
   m_Name: Worker
   m_TagString: Unit
@@ -73,15 +71,15 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 2131180789
-  m_SortingLayer: 3
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300004, guid: b31d5cfaf84df3c4c84ab3155d255385, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 214764b95ff7d9f4b936ebcc9e2b843d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.34375}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -100,7 +98,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 5
+  m_LinearDrag: 1
   m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
@@ -120,6 +118,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095532e6e28e04442a38ba454de9b679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 5
+  acceleration: 0
+  topSpeed: 0
+  repulsionStrength: 150
 --- !u!58 &6739369405496992390
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -130,7 +132,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -168,12 +170,6 @@ MonoBehaviour:
   maxHealth: 5
   currentHealth: 5
   isAlive: 1
-  soulsToLive: 0
-  soulsNow: 0
-  maxSpeed: 2
-  attackingDistance: 0.8
-  seeingDistance: 5
-  damage: 1
 --- !u!114 &836413331906385000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,36 +185,3 @@ MonoBehaviour:
   carryingAmount: 0
   carryingType: 0
   maxResourceAmount: 5000
---- !u!95 &2063867425
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6739369405496992387}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f4db56e6b35a7724b81f3d7b82abf229, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2063867426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6739369405496992387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e1f041b72e60894090de6bd9fda71d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  action: 0
-  allowedToDo: 1

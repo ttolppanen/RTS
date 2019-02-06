@@ -51,9 +51,8 @@ public class CollectResourceTask : MonoBehaviour
                 }
             }
         }
-        if (animControl.action)
+        if (animControl.SpendAction())
         {
-            animControl.action = false;
             CollectResource();
         }
     }
@@ -104,17 +103,8 @@ public class CollectResourceTask : MonoBehaviour
         }
         Vector2Int newNodeLocation = UF.CoordinatePosition(newNode.transform.position);
         Vector2Int nodeSize = newNode.GetComponent<BuildingStatus>().size;
-        List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), newNodeLocation, newNodeLocation, nodeSize);
         Task task = new Task(GM.tasks[TaskTypes.collectResource], new List<GameObject> { newNode });
-        if (!(path.Count != 0 && path[0] == new Vector2Int(-999, -999)))
-        {
-            movScript.Move(path, task);
-        }
-        else
-        {
-            movScript.Stop();
-        }
-      
+        movScript.GoDoATask(newNodeLocation, nodeSize, task);
     }
     
     void BringBackResource()
@@ -124,11 +114,9 @@ public class CollectResourceTask : MonoBehaviour
             GameObject closestResourcePile = Resources.ins.ClosestStoragePoint(transform.position, resourceType);
             Vector2Int buildingSize = closestResourcePile.GetComponent<BuildingStatus>().size;
             Vector2Int buildingPoint = UF.CoordinatePosition(closestResourcePile.transform.position);
-            List<Vector2Int> path = Map.ins.CorrectPathToBuilding(UF.CoordinatePosition(transform.position), buildingPoint, buildingPoint, buildingSize);
-            List<GameObject> objectives = new List<GameObject> { closestResourcePile };
-            objectives.Add(resourceObject);
+            List<GameObject> objectives = new List<GameObject> { closestResourcePile, resourceObject };
             Task task = new Task(GM.tasks[TaskTypes.bringBackResource], objectives);
-            movScript.Move(path, task);
+            movScript.GoDoATask(buildingPoint, buildingSize, task);
         }
         else
         {

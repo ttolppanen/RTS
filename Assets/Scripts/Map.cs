@@ -316,10 +316,6 @@ public class Map : MonoBehaviour
         {
             return new List<Vector2Int>() { new Vector2Int(-999, -999) };
         }
-        if (start == goal)
-        {
-            return new List<Vector2Int>();
-        }
         List<Vector2Int> closedSet = new List<Vector2Int>(); //Pisteet jotka on jo tutkittu?
         List<Vector2Int> openSet = new List<Vector2Int>(); //Pisteet mitkä pitää tutkia?
         openSet.Add(start);
@@ -368,10 +364,6 @@ public class Map : MonoBehaviour
 
     public List<Vector2Int> AStarPathFinding(Vector2Int start, Vector2Int goal, List<Vector2Int> buildingCoordinates, Vector2Int buildingSize)
     {
-        if (start == goal)
-        {
-            return new List<Vector2Int>();
-        }
         if (!IsBuildingAccessible(goal, buildingSize))
         {
             return new List<Vector2Int>() { new Vector2Int(-999, -999) };
@@ -549,11 +541,15 @@ public class Map : MonoBehaviour
     public List<Vector2Int> CorrectPathToBuilding(Vector2Int start, Vector2Int goal, Vector2Int buildingPoint, Vector2Int buildingSize)
     {
         List<Vector2Int> path = AStarPathFinding(start, goal, BuildingCoordinates(buildingPoint, buildingSize), buildingSize);
-        if (path.Count == 1 && path[0] == new Vector2Int(-999, -999))
+        if (path.Count != 1 && path[0] == new Vector2Int(-999, -999))
         {
             return path;
         }
         List<Vector2Int> coordinatesAroundBuilding = PointsAroundBuilding(buildingPoint, buildingSize);
+        if (coordinatesAroundBuilding.Contains(start))
+        {
+            return new List<Vector2Int> { start };
+        }
         for (int i = path.Count - 1; i > 0; i--)
         {
             if (!coordinatesAroundBuilding.Contains(path[i]))
@@ -565,7 +561,7 @@ public class Map : MonoBehaviour
                 return path;
             }
         }
-        return new List<Vector2Int>(); //Jos ei toiminutkaan?
+        return new List<Vector2Int> { new Vector2Int(-999, -999) }; //Jos ei toiminutkaan?
     }//Käytä tätä kun haet reittiä rakennukseen, etkä yhteen pisteeseen
 
     bool IsBuildingAccessible(Vector2Int point, Vector2Int size)

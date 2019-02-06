@@ -11,6 +11,11 @@ public class UnitStatus : MonoBehaviour
     public bool isAlive = true;
     public int soulsToLive;
     public int soulsNow;
+    public float maxSpeed;
+    public float attackingDistance; //Kuinka läheltä yltää lyömään
+    public float seeingDistance; //Kuinka kaukaa agrotaan
+    public float damage;
+    
 
 
     private void Start()
