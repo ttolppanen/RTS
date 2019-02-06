@@ -20,7 +20,7 @@ public class EnemyAI : MonoBehaviour
         StartCoroutine(StartAttacking());
     }
 
-    IEnumerator StartAttacking()//sekunnin välein päivitetään polkua vihuun jne...
+    IEnumerator StartAttacking()//Ei tarvi ihan joka frame tarkistaa onko vihuja lähellä... varmankaan
     {
         if (target == null)
         {
@@ -37,10 +37,10 @@ public class EnemyAI : MonoBehaviour
         }
         if(unitStatus.currentState != UnitStates.attacking && target != null)
         {
-            Task attackingTask = new Task(GM.tasks[TaskTypes.attack], new List<GameObject> { target }, 1.5f);
+            Task attackingTask = new Task(GM.tasks[TaskTypes.attack], new List<GameObject> { target }, unitStatus.attackingDistance);
             unitMov.GoDoATask(attackingTask);
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         StartCoroutine(StartAttacking());
     }
 

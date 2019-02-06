@@ -139,8 +139,8 @@ MonoBehaviour:
   isAlive: 1
   soulsToLive: 2
   soulsNow: 2
-  maxSpeed: 1.5
-  attackingDistance: 1
+  maxSpeed: 1.2
+  attackingDistance: 0.8
   seeingDistance: 5
   damage: 1
 --- !u!114 &8715981660970241173
@@ -187,7 +187,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bb502961b734024881c4cffddc13631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seeingDistance: 6
   target: {fileID: 0}
 --- !u!114 &1552796555
 MonoBehaviour:

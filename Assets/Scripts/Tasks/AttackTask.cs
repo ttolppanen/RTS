@@ -31,7 +31,7 @@ public class AttackTask : MonoBehaviour
 
     private void Update()
     {
-        if (enemy == null || UF.DistanceBetween2Units(transform.position, enemy.transform.position) >= unitStats.seeingDistance)
+        if (enemy == null || UF.DistanceBetween2Units(transform.position, enemy.transform.position) > unitStats.attackingDistance + 0.5f)
         {
             unitMov.Stop();
         }

@@ -171,7 +171,7 @@ MonoBehaviour:
   soulsToLive: 0
   soulsNow: 0
   maxSpeed: 2
-  attackingDistance: 1
+  attackingDistance: 0.8
   seeingDistance: 5
   damage: 1
 --- !u!114 &836413331906385000

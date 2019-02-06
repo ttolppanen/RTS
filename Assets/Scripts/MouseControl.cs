@@ -86,7 +86,6 @@ public class MouseControl : MonoBehaviour
                             foreach (GameObject unit in chosenUnits)
                             {
                                 Task task = new Task(GM.tasks[TaskTypes.idle], null);
-                                List<Vector2Int> path = new List<Vector2Int>();
 
                                 Vector2Int mousePos = UF.GetMousePosCoordinated();
                                 RaycastHit2D objectUnderMouse = UF.MouseCast();
@@ -101,12 +100,11 @@ public class MouseControl : MonoBehaviour
                                     if (taskObject.GetComponent<BuildingStatus>() != null) //On jonkin kokoinen
                                     {
                                         Vector2Int size = taskObject.GetComponent<BuildingStatus>().size;
-                                        path = Map.ins.CorrectPathToBuilding(unitPos, mousePos, UF.CoordinatePosition(taskObject.transform.position), size);
                                         unitMov.GoDoATask(mousePos, size, task);
                                     }
-                                    else if (taskObject.tag == "Enemy")
+                                    else if (taskType == TaskTypes.attack)
                                     {
-                                        task.taskRange = 1.5f;
+                                        task.taskRange = unit.GetComponent<UnitStatus>().attackingDistance;
                                         unitMov.GoDoATask(task);
                                     }
                                     else
