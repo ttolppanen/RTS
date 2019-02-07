@@ -14,6 +14,6 @@ public class ResourcePile : MonoBehaviour
 
     public void StorageResources(int amount)
     {
-        Resources.ins.AddResource(amount, type);
+        Resources.ins.AddResource(new Resource(type, amount));
     }
 }

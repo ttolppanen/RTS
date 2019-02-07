@@ -11,7 +11,7 @@ public class SoulResource : MonoBehaviour
     {
         if (collision.tag == "Unit")
         {
-            Resources.ins.AddResource(soulAmount, ResourceTypes.soul);
+            Resources.ins.AddResource(new Resource(ResourceTypes.soul, soulAmount));
             Destroy(gameObject);
         }
     }

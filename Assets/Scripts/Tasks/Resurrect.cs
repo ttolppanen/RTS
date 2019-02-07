@@ -11,10 +11,10 @@ public class Resurrect : MonoBehaviour
 
         GameObject target = targets[0];
         int souls = target.GetComponent<UnitStatus>().howManySouls();
-        int[] cost = new int[] { 0, 0, souls };
-        if(Resources.ins.IsEnoughResources(cost))
+        Resource soulResource = new Resource(ResourceTypes.soul, souls);
+        if(Resources.ins.IsEnoughResources(soulResource))
         {
-            Resources.ins.RemoveResources(cost);
+            Resources.ins.RemoveResources(soulResource);
             target.GetComponent<UnitStatus>().resurrect();
         }
         else

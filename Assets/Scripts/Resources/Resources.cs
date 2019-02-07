@@ -38,17 +38,17 @@ public class Resources : MonoBehaviour
         UpdateTexts();
     }
 
-    public void AddResource(int amount, ResourceTypes type)
+    public void AddResource(Resource resource)
     {
-        resources[type] += amount;
+        resources[resource.type] += resource.amount;
         UpdateTexts();
     }
 
-    public bool IsEnoughResources(int[] resourceCosts)
+    public bool IsEnoughResources(Resource[] resourceCosts)
     {
-        for (int i = 0; i < resourceCosts.Length; i++)
-        {
-            if (resourceCosts[i] > resources[(ResourceTypes)i])
+        foreach (Resource resource in resourceCosts)
+        { 
+            if (resource.amount > resources[resource.type])
             {
                 return false;
             }
@@ -56,12 +56,27 @@ public class Resources : MonoBehaviour
         return true;
     }
 
-    public void RemoveResources(int[] resourceCosts)
+    public bool IsEnoughResources(Resource resource)
     {
-        for (int i = 0; i < resourceCosts.Length; i++)
+        if (resource.amount > resources[resource.type])
         {
-            resources[(ResourceTypes)i] -= resourceCosts[i];
+            return false;
         }
+        return true;
+    }
+
+    public void RemoveResources(Resource[] resourceCosts)
+    {
+        foreach (Resource resource in resourceCosts)
+        { 
+            resources[resource.type] -= resource.amount;
+        }
+        UpdateTexts();
+    }
+
+    public void RemoveResources(Resource resource)
+    {
+        resources[resource.type] -= resource.amount;
         UpdateTexts();
     }
 
@@ -93,5 +108,16 @@ public class Resources : MonoBehaviour
             }
             return closestStoragePoint;
         }
+    }
+}
+public struct Resource
+{
+    public int amount;
+    public ResourceTypes type;
+
+    public Resource(ResourceTypes type, int amount)
+    {
+        this.amount = amount;
+        this.type = type;
     }
 }

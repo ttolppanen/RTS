@@ -13,7 +13,7 @@ public class StealSoul : MonoBehaviour
         int souls = target.GetComponent<UnitStatus>().soulsToSteal();
         target.GetComponent<UnitStatus>().stealSouls();
 
-        Resources.ins.AddResource(souls, ResourceTypes.soul);
+        Resources.ins.AddResource(new Resource(ResourceTypes.soul, souls));
 
         GetComponent<UnitMovement>().Stop();
     }
