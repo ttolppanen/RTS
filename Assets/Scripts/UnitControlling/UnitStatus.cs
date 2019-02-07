@@ -15,18 +15,21 @@ public class UnitStatus : MonoBehaviour
     public float attackingDistance; //Kuinka läheltä yltää lyömään
     public float seeingDistance; //Kuinka kaukaa agrotaan
     public float damage;
-    
 
+    Animator anim;
+    UnitMovement unitMov;
+
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
+        unitMov = GetComponent<UnitMovement>();
+    }
 
     private void Start()
     {
-        if(currentHealth <= 0.0f)
+        if(currentHealth <= 0)
         {
-            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-            Color colour = new Color(0,0,0,1);
-            sprite.color = colour;
-            gameObject.tag = "Body";
-            isAlive = false;
+            Die();
         }
     }
 
@@ -51,8 +54,7 @@ public class UnitStatus : MonoBehaviour
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
-            isAlive = false;
-            gameObject.tag = "Body";
+            Die();
         }
     }
 
@@ -65,6 +67,16 @@ public class UnitStatus : MonoBehaviour
         }
     }
 
+    void Die()
+    {
+        unitMov.Stop();
+        MouseControl.ins.RemoveFromChosenUnits(gameObject);
+        isAlive = false;
+        anim.SetTrigger("Dead");
+        gameObject.tag = "Body";
+        gameObject.layer = LayerMask.NameToLayer("Default");
+    }
+
     public void resurrect()
     {
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
@@ -72,6 +84,8 @@ public class UnitStatus : MonoBehaviour
         sprite.color = colour;
         currentHealth = maxHealth;
         isAlive = true;
+        anim.SetTrigger("Resurrect");
         gameObject.tag = "Unit";
+        gameObject.layer = LayerMask.NameToLayer("Unit");
     }
 }

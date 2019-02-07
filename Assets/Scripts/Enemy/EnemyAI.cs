@@ -6,7 +6,8 @@ public class EnemyAI : MonoBehaviour
 {
     UnitMovement unitMov;
     UnitStatus unitStatus;
-    public GameObject target;
+    UnitStatus enemyStatus;
+    GameObject target;
     Vector2 movementDirection;
 
     private void Awake()
@@ -28,11 +29,16 @@ public class EnemyAI : MonoBehaviour
             if (colls.Length != 0)
             {
                 target = FindClosestEnemy(colls);
+                if (target != null)
+                {
+                    enemyStatus = target.GetComponent<UnitStatus>();
+                }
             }
         }
-        else if (UF.DistanceBetween2Units(transform.position, target.transform.position) >= unitStatus.seeingDistance)
+        else if (!enemyStatus.isAlive || UF.DistanceBetween2Units(transform.position, target.transform.position) >= unitStatus.seeingDistance)
         {
             target = null;
+            enemyStatus = null;
             unitMov.Stop();
         }
         if(unitStatus.currentState != UnitStates.attacking && target != null)
