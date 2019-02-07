@@ -63,19 +63,15 @@ public class UIChooser : MonoBehaviour
             {
                 Destroy(slot.GetChild(0).gameObject);
             }
-            
         }
     }
 
     public void stopUnits()
     {
         List<GameObject> units = MouseControl.ins.giveChosenUnits();
-        print("Click");
-
         foreach(GameObject unit in units)
         {
             unit.GetComponent<UnitMovement>().Stop();
         }
-
     }
 }
