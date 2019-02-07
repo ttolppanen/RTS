@@ -176,7 +176,11 @@ public class MouseControl : MonoBehaviour
                 }
                 break;
         }
-        
-        
+    }
+
+    public void RemoveFromChosenUnits(GameObject unit)
+    {
+        chosenUnits.Remove(unit);
+        chooseUI();
     }
 }

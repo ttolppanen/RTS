@@ -165,32 +165,9 @@ public class UnitMovement : MonoBehaviour
         StartCoroutine(UpdatePath(goal));
     }
 
-   /* public void GoDoATask(List<Vector2Int> newPath, Task newTask)
-    {
-        if (newPath.Count != 0 && newPath[0] == new Vector2Int(-999, -999)) //ei pitäisi oikeasti koskaan päässä tänne?
-        {
-            return;
-        }
-        ResetTaskInstance();
-        animControl.ResetAnimations();
-        currentTask = newTask;
-        path = newPath;
-        if (path.Count > 1)
-        {
-            i = 0;
-            anim.SetBool("Running", true);
-            movingDirection = (path[1] - path[0]);
-            transform.rotation = UF.TurnUnit(movingDirection, -90f);
-        }
-        else
-        {
-            path.Clear();
-            StartTask();
-        }
-    }*/
-
     public void SetAndStartTask(Task newTask)
     {
+        Stop();
         currentTask = newTask;
         StartTask();
     }
@@ -199,7 +176,6 @@ public class UnitMovement : MonoBehaviour
     {
         ResetTaskAndPathAndOthers();
         rb.velocity = Vector2.zero;
-        currentTask = new Task(GM.tasks[TaskTypes.idle], null);
         unitStatus.currentState = UnitStates.idle;
     }
 
@@ -217,6 +193,7 @@ public class UnitMovement : MonoBehaviour
         {
             Destroy(currentTask.taskScriptInstance);
         }
+        currentTask = new Task(GM.tasks[TaskTypes.idle], null);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
