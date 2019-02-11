@@ -23,28 +23,31 @@ public class EnemyAI : MonoBehaviour
 
     IEnumerator StartAttacking()//Ei tarvi ihan joka frame tarkistaa onko vihuja lähellä... varmankaan
     {
-        if (target == null)
+        if (unitStatus.isAlive)
         {
-            Collider2D[] colls = Physics2D.OverlapCircleAll(transform.position, unitStatus.seeingDistance, LayerMask.GetMask("Unit"));
-            if (colls.Length != 0)
+            if (target == null)
             {
-                target = FindClosestEnemy(colls);
-                if (target != null)
+                Collider2D[] colls = Physics2D.OverlapCircleAll(transform.position, unitStatus.seeingDistance, LayerMask.GetMask("Unit"));
+                if (colls.Length != 0)
                 {
-                    enemyStatus = target.GetComponent<UnitStatus>();
+                    target = FindClosestEnemy(colls);
+                    if (target != null)
+                    {
+                        enemyStatus = target.GetComponent<UnitStatus>();
+                    }
                 }
             }
-        }
-        else if (!enemyStatus.isAlive || UF.DistanceBetween2Units(transform.position, target.transform.position) >= unitStatus.seeingDistance)
-        {
-            target = null;
-            enemyStatus = null;
-            unitMov.Stop();
-        }
-        if(unitStatus.currentState != UnitStates.attacking && target != null)
-        {
-            Task attackingTask = new Task(GM.tasks[TaskTypes.attack], new List<GameObject> { target }, unitStatus.attackingDistance);
-            unitMov.GoDoATask(attackingTask);
+            else if (!enemyStatus.isAlive || UF.DistanceBetween2Units(transform.position, target.transform.position) >= unitStatus.seeingDistance)
+            {
+                target = null;
+                enemyStatus = null;
+                unitMov.Stop();
+            }
+            if (unitStatus.currentState != UnitStates.attacking && target != null)
+            {
+                Task attackingTask = new Task(GM.tasks[TaskTypes.attack], new List<GameObject> { target }, unitStatus.attackingDistance);
+                unitMov.GoDoATask(attackingTask);
+            }
         }
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(StartAttacking());
