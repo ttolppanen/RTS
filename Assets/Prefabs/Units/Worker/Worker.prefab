@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 836413331906385000}
   - component: {fileID: 2063867425}
   - component: {fileID: 2063867426}
+  - component: {fileID: 6685970655733754387}
   m_Layer: 8
   m_Name: Worker
   m_TagString: Unit
@@ -74,8 +75,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2131180789
-  m_SortingLayer: 3
-  m_SortingOrder: 2
+  m_SortingLayer: 2
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300004, guid: b31d5cfaf84df3c4c84ab3155d255385, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -225,3 +226,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   action: 0
   allowedToDo: 1
+--- !u!114 &6685970655733754387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6739369405496992387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 825e320d24b21824981dbdffeb87f78f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
