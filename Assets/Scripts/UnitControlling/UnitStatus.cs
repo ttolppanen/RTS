@@ -16,6 +16,10 @@ public class UnitStatus : MonoBehaviour
     public float seeingDistance; //Kuinka kaukaa agrotaan
     public float damage;
 
+    public int woodCost;
+    public int stoneCost;
+    public int soulCost;
+
     Animator anim;
     UnitMovement unitMov;
 
@@ -87,5 +91,16 @@ public class UnitStatus : MonoBehaviour
         anim.SetTrigger("Resurrect");
         gameObject.tag = "Unit";
         gameObject.layer = LayerMask.NameToLayer("Unit");
+    }
+
+    public Resource[] FetchResourceCosts()
+    {
+        Resource[] resourceCosts = new Resource[]
+        {
+            new Resource(ResourceTypes.wood, woodCost),
+            new Resource(ResourceTypes.stone, stoneCost),
+            new Resource(ResourceTypes.soul, soulCost)
+        };
+        return resourceCosts;
     }
 }

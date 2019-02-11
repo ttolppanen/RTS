@@ -201,7 +201,7 @@ public class UnitMovement : MonoBehaviour
         if (collision.tag == "Unit")
         {
             Vector2 awayFromOther = transform.position - collision.transform.position;
-            rb.AddForce(awayFromOther.normalized * Time.deltaTime * GM.unitRepulsionStrenght * rb.mass * rb.drag);
+            rb.AddForce(awayFromOther.normalized * Time.deltaTime * GM.unitRepulsionStrenght * rb.mass * rb.drag + new Vector2(UnityEngine.Random.Range(-0.1f, 0.1f), UnityEngine.Random.Range(-0.1f, 0.1f)));
         }
     }
 }

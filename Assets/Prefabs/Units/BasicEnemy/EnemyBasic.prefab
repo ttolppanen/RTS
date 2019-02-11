@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 1552796546}
   - component: {fileID: 1552796555}
   - component: {fileID: 1960580905}
+  - component: {fileID: 6352772496811118413}
   m_Layer: 0
   m_Name: EnemyBasic
   m_TagString: Enemy
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2131180789
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300004, guid: b31d5cfaf84df3c4c84ab3155d255385, type: 3}
   m_Color: {r: 0.9622642, g: 0.39273098, b: 0.09531862, a: 1}
@@ -143,6 +144,9 @@ MonoBehaviour:
   attackingDistance: 0.8
   seeingDistance: 5
   damage: 1
+  woodCost: 0
+  stoneCost: 0
+  soulCost: 0
 --- !u!114 &8715981660970241173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +191,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bb502961b734024881c4cffddc13631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
 --- !u!114 &1552796555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,3 +221,15 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.25
+--- !u!114 &6352772496811118413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6739369405496992387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 825e320d24b21824981dbdffeb87f78f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

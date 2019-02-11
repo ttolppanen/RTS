@@ -468,7 +468,7 @@ public class Map : MonoBehaviour
         return smallestPoint;
     }
 
-    List<Vector2Int> PointsAroundBuilding(Vector2Int point, Vector2Int size)
+    public List<Vector2Int> PointsAroundBuilding(Vector2Int point, Vector2Int size)
     {
         List<Vector2Int> possiblePoints = new List<Vector2Int>();
         for (int iy = 0; iy <= 1; iy++) //Käydään läpi rakennuksen ala ja ylä reuna...

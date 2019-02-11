@@ -34,7 +34,7 @@ public class PreBuilder : MonoBehaviour
         sr.sprite = buildingSprite;
         BuildingStatus bs = buildingToSpawn.GetComponent<BuildingStatus>();
         size = bs.size;
-        resourceCosts = bs.resourceCosts;
+        resourceCosts = bs.FetchResourceCosts();
     }
 
     private void Update()
