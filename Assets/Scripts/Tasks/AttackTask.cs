@@ -55,7 +55,17 @@ public class AttackTask : MonoBehaviour
 
         if (animControl.SpendAction())
         {
-            enemyStatus.DealDamage(unitStats.damage);
+            if(unitStats.ranged)
+            {
+                GameObject projectile = Instantiate(unitStats.rangedAttack);
+                projectile.transform.position = gameObject.transform.position;
+                projectile.GetComponent<RangedAttack>().getTarget(enemy);
+            }
+            else
+            {
+                enemyStatus.DealDamage(unitStats.damage);
+            }
+            
         }
     }
 

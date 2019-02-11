@@ -15,6 +15,8 @@ public class UnitStatus : MonoBehaviour
     public float attackingDistance; //Kuinka läheltä yltää lyömään
     public float seeingDistance; //Kuinka kaukaa agrotaan
     public float damage;
+    public bool ranged;
+    public GameObject rangedAttack;
 
     Animator anim;
     UnitMovement unitMov;
