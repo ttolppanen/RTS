@@ -40,6 +40,10 @@ public class UIChooser : MonoBehaviour
             case UITypes.Attacker:
                 UIs[2].SetActive(true);
             break;
+
+            case UITypes.Structure:
+                print("Muistutus, että UIChooserissa structure ui tyyppi on auki.");
+            break;
         }
 
         for(int i = 0; i<freeButtons.Count; i++)

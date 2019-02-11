@@ -6,10 +6,10 @@ public class CreateUnitButton : MonoBehaviour
 {
     public GameObject unit;
 
-    void SpawnUnit()
+    public void SpawnUnit()
     {
         GameObject building = UIChooser.ins.whoseUI;
-        Resource[] resourceCosts = unit.GetComponent<UnitStatus>().resourceCosts;
+        Resource[] resourceCosts = unit.GetComponent<UnitStatus>().FetchResourceCosts();
         if (Resources.ins.IsEnoughResources(resourceCosts))
         {
             Resources.ins.RemoveResources(resourceCosts);

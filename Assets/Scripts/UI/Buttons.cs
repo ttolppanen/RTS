@@ -19,4 +19,4 @@ public class Buttons : MonoBehaviour
     }
 
 }
-public enum UITypes { Worker, Building, Attacker };
+public enum UITypes { Worker, Building, Attacker, Structure };
