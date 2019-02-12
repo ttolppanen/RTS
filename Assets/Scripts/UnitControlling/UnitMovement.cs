@@ -14,6 +14,8 @@ public class UnitMovement : MonoBehaviour
     UnitStatus unitStatus;
     public Task currentTask;
 
+    Coroutine pathUpdatingCoroutine; //Referenssi nykyiseen pathFindingCoroutineen että niitä ei jää montaa päälle
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -144,11 +146,20 @@ public class UnitMovement : MonoBehaviour
             i = 1;
             anim.SetBool("Running", true);
             movingDirection = (path[1] + new Vector2(0.5f, 0.5f)) - (Vector2)(transform.position);
-            StartCoroutine(UpdatePath(newTask.objectives[0]));
+            BeginPathUpdating(newTask.objectives[0]);
         }
     }
 
-    IEnumerator UpdatePath(GameObject goal)
+    void BeginPathUpdating(GameObject goal)
+    {
+        if (pathUpdatingCoroutine != null)
+        {
+            StopCoroutine(pathUpdatingCoroutine);
+        }
+        pathUpdatingCoroutine = StartCoroutine(UpdatePathCoroutine(goal));
+    }
+
+    IEnumerator UpdatePathCoroutine(GameObject goal)
     {
         if (goal == null)
         {
@@ -162,7 +173,7 @@ public class UnitMovement : MonoBehaviour
             yield break;
         }
         yield return new WaitForSeconds(1f);
-        StartCoroutine(UpdatePath(goal));
+        BeginPathUpdating(goal);
     }
 
     public void SetAndStartTask(Task newTask)
@@ -184,7 +195,10 @@ public class UnitMovement : MonoBehaviour
         path.Clear();
         ResetTaskInstance();
         animControl.ResetAnimations();
-        StopCoroutine("UpdatePath");
+        if (pathUpdatingCoroutine != null)
+        {
+            StopCoroutine(pathUpdatingCoroutine);
+        }
     }
 
     void ResetTaskInstance()
